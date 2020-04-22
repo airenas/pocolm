@@ -1,0 +1,13 @@
+###############################################################################
+dataDir=data
+finalName=dlkt+iarpa
+corpus=DLKT_BIT.02_nounk
+corpusAdapt=iarpa_babel_corpus
+vocab=accepted_words
+order?=2
+###############################################################################
+getCorpusCmd=scp -P 7022 airenas@list.airenas.eu:/home/gailius/$(corpus).tar.gz $(dataDir)/dwn/
+getCorpusAdaptCmd=cp /home/airenas/hdd/projects/lm/lmjoin/iarpa_babel_corpus.txt $(dataDir)/dwn/
+getVocabCmd=cp /home/airenas/hdd/projects/lm/lmjoin/accepted_words $(dataDir)/dwn/
+###############################################################################
+srilmDir=../../srilm/bin/i686-m64
