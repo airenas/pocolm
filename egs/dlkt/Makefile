@@ -39,8 +39,8 @@ $(dataDir)/text/$(corpusAdapt).txt $(evalTxt) $(devTxt): $(dataDir)/dwn/$(corpus
 # hold out one in every 50 lines as dev data and 50+1 line as evaluation data.
 	cat $(dataDir)/dwn/$(corpusAdapt).txt | \
 		awk \
-		'{if(NR%50 == 0) { print >"$(devTxt)"; } \
-		else {if(NR%50 == 1) { print >"$(evalTxt)"; } \
+		'{if(NR%20 == 0) { print >"$(devTxt)"; } \
+		else {if(NR%20 == 1) { print >"$(evalTxt)"; } \
 		else {print;}}}' >$(dataDir)/text/$(corpusAdapt).txt
 ##########################################################################################
 $(dataDir)/dwn/$(vocab): | $(dataDir)/dwn
@@ -107,6 +107,9 @@ info:
 	@echo "POCOLM_ROOT=$(POCOLM_ROOT)"
 	@echo "ngram order=$(order)"
 ##########################################################################################
+put-arpa: 
+	$(putCmd) $(finalDir)/*.arpa.gz $(putDir)
+
 clean-final:
 	rm -rf $(finalDir)
 clean:
