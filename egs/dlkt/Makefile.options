@@ -10,7 +10,7 @@ getCorpusCmd=scp -P 7022 airenas@list.airenas.eu:/home/gailius/$(corpus).tar.gz 
 getCorpusAdaptCmd=cp /home/airenas/hdd/projects/lm/lmjoin/iarpa_babel_corpus.txt $(dataDir)/dwn/
 getVocabCmd=cp /home/airenas/hdd/projects/lm/lmjoin/accepted_words $(dataDir)/dwn/
 
-putCmd=rsync -P -e 'ssh -p 7080' -P
+putCmd=rsync -P -e 'ssh -p 7022' -P
 putDir=airenas@list.airenas.eu:/home/airenas/lm/
 ###############################################################################
 srilmDir=../../srilm/bin/i686-m64

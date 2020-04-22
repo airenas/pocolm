@@ -36,7 +36,8 @@ $(dataDir)/dwn/$(corpus).tar.gz: | $(dataDir)/dwn
 $(dataDir)/dwn/$(corpusAdapt).txt: | $(dataDir)/dwn
 	$(getCorpusAdaptCmd)
 $(dataDir)/text/$(corpusAdapt).txt $(evalTxt) $(devTxt): $(dataDir)/dwn/$(corpusAdapt).txt | $(dataDir)/text $(dataDir)/eval
-# hold out one in every 50 lines as dev data and 50+1 line as evaluation data.
+# hold out one in every 20 lines as dev data and as evaluation data.
+# use 5 % for dev and 5% for test
 	cat $(dataDir)/dwn/$(corpusAdapt).txt | \
 		awk \
 		'{if(NR%20 == 0) { print >"$(devTxt)"; } \
