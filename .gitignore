@@ -18,3 +18,4 @@
 
 .depend.mk
 srilm/**
+egs/**/data/**

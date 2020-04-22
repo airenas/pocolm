@@ -27,7 +27,7 @@ $(devDir):
 	mkdir -p $@		
 ##########################################################################################
 $(dataDir)/text/$(corpus).txt: $(dataDir)/dwn/$(corpus).tar.gz | $(dataDir)/text
-	tar -zxvf $(dataDir)/dwn/$(corpus).tar.gz -C $(dataDir)/text/$(corpus).txt
+	tar -zxvf $(dataDir)/dwn/$(corpus).tar.gz -C $(dataDir)/text/
 	touch $(dataDir)/text/$(corpus).txt
 
 $(dataDir)/dwn/$(corpus).tar.gz: | $(dataDir)/dwn
@@ -80,7 +80,7 @@ show-ppl:
 ##########################################################################################
 $(lmDir):
 	mkdir -p $@	
-$(lmDir)/%-$(order)gram.arpa.gz: $(dataDir)/text/%.txt | $(lmDir)
+$(lmDir)/%-$(order)gram.arpa.gz: $(dataDir)/text/%.txt $(dataDir)/vocab/$(vocab) | $(lmDir)
 	$(srilmDir)/ngram-count -unk -order $(order) -vocab $(dataDir)/vocab/$(vocab) -kndiscount -text $< -lm $@
 ##########################################################################################
 $(devDir)/%-$(order)gram.ppl: $(lmDir)/%-$(order)gram.arpa.gz | $(devDir)
