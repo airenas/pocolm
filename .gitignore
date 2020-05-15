@@ -20,3 +20,4 @@
 srilm/**
 egs/**/data/**
 tools/bin/**
+tools/go.sum
