@@ -13,14 +13,15 @@ import (
 	"github.com/pkg/errors"
 )
 
-var replaceableSymbols map[rune]rune
+var replaceableSymbols map[rune][]rune
 
 func init() {
-	replaceableSymbols = make(map[rune]rune)
-	for _, r := range []rune(" \t\r") {
-		replaceableSymbols[r] = ' '
+	replaceableSymbols = make(map[rune][]rune)
+	for _, r := range []rune(" \t\r•\uFEFF") {
+		replaceableSymbols[r] = []rune(" ")
 	}
-	replaceableSymbols['–'] = '-'
+	replaceableSymbols['–'] = []rune("-")
+	replaceableSymbols['…'] = []rune("...")
 }
 
 func main() {
@@ -72,20 +73,18 @@ func changeLine(line string) string {
 	runes := []rune(line)
 	res := make([]rune, 0)
 	for _, r := range runes {
-		res = append(res, changeSymbol(r))
+		res = append(res, changeSymbol(r)...)
 	}
 	r := string(res)
 	r = strings.TrimSpace(r)
 	r = strings.ReplaceAll(r, "  ", " ")
-	r = strings.ReplaceAll(r, "...", ".")
-	r = strings.ReplaceAll(r, "..", ".")
 	return string(r)
 }
 
-func changeSymbol(r rune) rune {
+func changeSymbol(r rune) []rune {
 	s, ok := replaceableSymbols[r]
 	if ok {
 		return s
 	}
-	return r
+	return []rune{r}
 }

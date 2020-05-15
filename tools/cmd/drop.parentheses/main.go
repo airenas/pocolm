@@ -75,7 +75,7 @@ func changeLine(line string) string {
 		if f {
 			pi, f := findParenthesis(rns[i:], p)
 			if f {
-				res.WriteString(" <SKL> ")
+				res.WriteString(" <SKLIAUSTUOSE> ")
 				i += pi
 				continue
 			}
