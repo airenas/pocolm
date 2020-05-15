@@ -11,16 +11,16 @@ func TestNoChange(t *testing.T) {
 }
 
 func TestDrops(t *testing.T) {
-	assert.Equal(t, "mama <SKL>", changeLine("mama (olia)"))
-	assert.Equal(t, "mama <SKL> xx", changeLine("mama (tatata hhha) xx"))
-	assert.Equal(t, "<SKL> olia", changeLine("(mama) olia"))
-	assert.Equal(t, "mama <SKL> dddd <SKL> ccc", changeLine("mama () dddd (aaa aaa) ccc"))
+	assert.Equal(t, "mama <SKLIAUSTUOSE>", changeLine("mama (olia)"))
+	assert.Equal(t, "mama <SKLIAUSTUOSE> xx", changeLine("mama (tatata hhha) xx"))
+	assert.Equal(t, "<SKLIAUSTUOSE> olia", changeLine("(mama) olia"))
+	assert.Equal(t, "mama <SKLIAUSTUOSE> dddd <SKLIAUSTUOSE> ccc", changeLine("mama () dddd (aaa aaa) ccc"))
 }
 
 func TestDropsVarious(t *testing.T) {
-	assert.Equal(t, "mama <SKL>", changeLine("mama [olia]"))
-	assert.Equal(t, "mama <SKL>", changeLine("mama {olia}"))
-	assert.Equal(t, "mama <SKL>", changeLine("mama <olia>"))
+	assert.Equal(t, "mama <SKLIAUSTUOSE>", changeLine("mama [olia]"))
+	assert.Equal(t, "mama <SKLIAUSTUOSE>", changeLine("mama {olia}"))
+	assert.Equal(t, "mama <SKLIAUSTUOSE>", changeLine("mama <olia>"))
 }
 
 func TestNoDrop(t *testing.T) {
@@ -28,6 +28,6 @@ func TestNoDrop(t *testing.T) {
 }
 
 func TestDropsMultiple(t *testing.T) {
-	assert.Equal(t, "mama <SKL> tt", changeLine("mama (olia (xxx) ir) tt"))
-	assert.Equal(t, "mama ( <SKL> tt", changeLine("mama ((olia (xxx) ir) tt"))
+	assert.Equal(t, "mama <SKLIAUSTUOSE> tt", changeLine("mama (olia (xxx) ir) tt"))
+	assert.Equal(t, "mama ( <SKLIAUSTUOSE> tt", changeLine("mama ((olia (xxx) ir) tt"))
 }
