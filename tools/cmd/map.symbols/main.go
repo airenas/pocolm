@@ -27,13 +27,15 @@ func main() {
 
 func initRegexp() {
 	replaces = make([]*replace, 0)
-	replaces = append(replaces, &replace{str: "<URL>", regxp: xurls.Relaxed()})
+	replaces = append(replaces, &replace{str: "<URL>", regxp: xurls.Strict()})
 	replaces = append(replaces, &replace{str: " <PILDOMA> ", regxp: newRegexp("[_]{2,}")})
 	replaces = append(replaces, &replace{str: " <PILDOMA> ", regxp: newRegexp("[\\.]{4,}")})
 	replaces = append(replaces, &replace{str: " <PILDOMA> ", regxp: newRegexp(" [\\.]{3,}")})
 
 	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^[A-Z]\\)")})
 	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^[a-z]\\)")})
+	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^[A-Z]\\.")})
+	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^[a-z]\\.")})
 
 	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^(([0-9]){1,2}\\.){1,}")})
 	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^[a-z]\\)")})

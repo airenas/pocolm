@@ -13,8 +13,9 @@ func TestNoChange(t *testing.T) {
 
 func TestURL(t *testing.T) {
 	initRegexp()
-	assert.Equal(t, "mama <URL>", changeLine("mama www.delfi.lt"))
+	assert.Equal(t, "mama <URL>", changeLine("mama http://www.delfi.lt"))
 	assert.Equal(t, "mama <URL> ir", changeLine("mama http://delfi.lt?olia?tatata=tatat  ir"))
+	assert.Equal(t, "mama <URL>", changeLine("mama http://www.delfi.lt"))
 }
 
 func TestUnderscore(t *testing.T) {
@@ -39,6 +40,8 @@ func TestNumberLetter(t *testing.T) {
 	assert.Equal(t, "<NUMERACIJA> mama", changeLine("a) mama"))
 	assert.Equal(t, "aa) mama", changeLine("aa) mama"))
 	assert.Equal(t, "<NUMERACIJA> mama", changeLine("E) mama"))
+	assert.Equal(t, "<NUMERACIJA> mama", changeLine("a. mama"))
+	assert.Equal(t, "<NUMERACIJA> mama", changeLine("B. mama"))
 }
 
 func TestNumber(t *testing.T) {

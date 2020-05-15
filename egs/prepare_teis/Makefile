@@ -17,11 +17,15 @@ $(dataDir)/initial/corpus.txt: $(dataDir)/initial/corpus.txt.txt $(dataDir)/init
 	cat $(dataDir)/initial/corpus.txt.txt $(dataDir)/initial/corpus.doc.txt > $@
 
 $(dataDir)/working/corpus.clean.txt: $(dataDir)/initial/corpus.txt | $(dataDir)/working
-	$(toolsDir)/clear.symbols $^ $@
+	pv $^ | $(toolsDir)/clear.symbols > $@
 $(dataDir)/working/corpus.fixquotes.txt: $(dataDir)/working/corpus.clean.txt
-	$(toolsDir)/fix.quotes $^ $@	
+	pv $^ | $(toolsDir)/fix.quotes > $@
+$(dataDir)/working/corpus.nopar.txt: $(dataDir)/working/corpus.fixquotes.txt
+	pv $^ | $(toolsDir)/drop.parentheses > $@	
+$(dataDir)/working/corpus.mapped.txt: $(dataDir)/working/corpus.nopar.txt
+	pv $^ | $(toolsDir)/map.symbols > $@		
 
-prepare-data: $(dataDir)/working/corpus.fixquotes.txt
+prepare-data: $(dataDir)/working/corpus.mapped.txt
 ##########################################################################################
 info:
 	@echo "POCOLM_ROOT=$(POCOLM_ROOT)"
