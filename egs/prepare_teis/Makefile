@@ -4,6 +4,8 @@ PATH:=$(PATH):$(POCOLM_ROOT)/scripts
 ##########################################################################################
 $(dataDir)/initial:
 	mkdir -p $@
+$(dataDir)/working:
+	mkdir -p $@	
 ##########################################################################################
 $(dataDir)/initial/corpus.txt.txt: | $(dataDir)/initial
 	find $(corpusDir) -type f -name '*.txt' | xargs -d '\n' -n 1 cat > $@
@@ -14,7 +16,12 @@ $(dataDir)/initial/corpus.doc.txt: | $(dataDir)/initial
 $(dataDir)/initial/corpus.txt: $(dataDir)/initial/corpus.txt.txt $(dataDir)/initial/corpus.doc.txt 
 	cat $(dataDir)/initial/corpus.txt.txt $(dataDir)/initial/corpus.doc.txt > $@
 
-prepare-data: $(dataDir)/initial/corpus.txt
+$(dataDir)/working/corpus.clean.txt: $(dataDir)/initial/corpus.txt | $(dataDir)/working
+	$(toolsDir)/clear.symbols $^ $@
+$(dataDir)/working/corpus.fixquotes.txt: $(dataDir)/working/corpus.clean.txt
+	$(toolsDir)/fix.quotes $^ $@	
+
+prepare-data: $(dataDir)/working/corpus.fixquotes.txt
 ##########################################################################################
 info:
 	@echo "POCOLM_ROOT=$(POCOLM_ROOT)"
