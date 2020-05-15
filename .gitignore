@@ -19,3 +19,4 @@
 .depend.mk
 srilm/**
 egs/**/data/**
+tools/bin/**
