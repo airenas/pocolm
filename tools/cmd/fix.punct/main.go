@@ -22,21 +22,19 @@ func changeLine(line string) string {
 	}
 	rns := []rune(line)
 	res := strings.Builder{}
+	res.Grow(len(rns))
 	pr := '\n'
 	for _, r := range rns {
-		if pr == '.' && unicode.IsLetter(r) {
+		rLetter := unicode.IsLetter(r)
+		if pr == '.' && rLetter {
 			res.WriteRune(' ')
-		}
-		if pr == ',' && unicode.IsLetter(r) {
+		} else if pr == ',' && rLetter {
 			res.WriteRune(' ')
-		}
-		if pr == ':' && unicode.IsLetter(r) {
+		} else if pr == ':' && rLetter {
 			res.WriteRune(' ')
-		}
-		if r == '-' && unicode.IsLetter(pr) {
+		} else if r == '-' && unicode.IsLetter(pr) {
 			res.WriteRune(' ')
-		}
-		if pr == '-' && unicode.IsLetter(r) {
+		} else if pr == '-' && rLetter {
 			res.WriteRune(' ')
 		}
 		res.WriteRune(r)

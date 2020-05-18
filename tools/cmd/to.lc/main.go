@@ -34,7 +34,7 @@ func changeLine(line string, lm lemaProper) string {
 			res.WriteString(changeWord(w, lm))
 		}
 	}
-	return res.String()
+	return util.MultiSpacesRegexp.ReplaceAllString(res.String(), " ")
 }
 
 func changeWord(w string, lm lemaProper) string {
