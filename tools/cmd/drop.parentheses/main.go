@@ -14,6 +14,7 @@ func init() {
 	parenthesesSymbols['['] = ']'
 	parenthesesSymbols['{'] = '}'
 	parenthesesSymbols['<'] = '>'
+	parenthesesSymbols['«'] = '»'
 }
 
 func main() {

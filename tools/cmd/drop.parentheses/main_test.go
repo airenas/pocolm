@@ -21,6 +21,7 @@ func TestDropsVarious(t *testing.T) {
 	assert.Equal(t, "mama <SKLIAUSTUOSE>", changeLine("mama [olia]"))
 	assert.Equal(t, "mama <SKLIAUSTUOSE>", changeLine("mama {olia}"))
 	assert.Equal(t, "mama <SKLIAUSTUOSE>", changeLine("mama <olia>"))
+	assert.Equal(t, "mama <SKLIAUSTUOSE>", changeLine("mama «olia»"))
 }
 
 func TestNoDrop(t *testing.T) {
