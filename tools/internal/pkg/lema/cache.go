@@ -93,6 +93,7 @@ func (l *Cache) getDataFromServer(w string) *lInfo {
 			panic(errors.Wrap(err, "Can't analyze '"+w+"'"))
 		}
 		res.proper = isProper(r)
+		res.regular = isRegular(r)
 		res.lt = isLt(r)
 		res.abbreviation = isAbbreviation(r)
 	}
@@ -158,6 +159,9 @@ func toStr(l *lInfo) string {
 	if l.proper {
 		res = res + "P"
 	}
+	if l.regular {
+		res = res + "R"
+	}
 	if l.abbreviation {
 		res = res + "A"
 	}
@@ -198,6 +202,7 @@ func (l *Cache) loadReader(reader io.Reader) error {
 			}
 			li := lInfo{}
 			li.proper = strings.Index(strs[1], "P") > -1
+			li.regular = strings.Index(strs[1], "R") > -1
 			li.abbreviation = strings.Index(strs[1], "A") > -1
 			li.lt = strings.Index(strs[1], "L") > -1
 			li.number = strings.Index(strs[1], "N") > -1
@@ -212,11 +217,20 @@ func isProper(r *Result) bool {
 		return false
 	}
 	for _, mi := range r.Mi {
-		if !strings.HasPrefix(mi.Mi, "I") {
-			return false
+		if strings.HasPrefix(mi.Mi, "I") {
+			return true
 		}
 	}
-	return len(r.Mi) > 0
+	return false
+}
+
+func isRegular(r *Result) bool {
+	for _, mi := range r.Mi {
+		if !strings.HasPrefix(mi.Mi, "I") {
+			return true
+		}
+	}
+	return false
 }
 
 func isAbbreviation(r *Result) bool {

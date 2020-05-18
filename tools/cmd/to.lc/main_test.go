@@ -19,7 +19,7 @@ ir w
 kas w
 olia w
 sutartis w
-KAUNAS wP	
+KAUNAS wPR	
 `))
 	assert.Nil(t, err)
 }
