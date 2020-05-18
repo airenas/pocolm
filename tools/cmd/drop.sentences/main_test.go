@@ -43,3 +43,16 @@ func TestDropNonLtLetter(t *testing.T) {
 func TestDropJustNumbers(t *testing.T) {
 	assert.Equal(t, "", changeLine("0.0 1,000", lmCache))
 }
+
+func TestDropJustSpecial(t *testing.T) {
+	assert.Equal(t, "", changeLine("<PILDOMA>", lmCache))
+}
+
+func TestDropJustAbbreviation(t *testing.T) {
+	assert.Equal(t, "", changeLine("h", lmCache))
+	assert.Equal(t, "", changeLine("Tel.", lmCache))
+}
+
+func TestDropParenthesis(t *testing.T) {
+	assert.Equal(t, "", changeLine("(olia ir", lmCache))
+}

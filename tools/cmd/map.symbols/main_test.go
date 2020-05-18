@@ -15,7 +15,7 @@ func TestURL(t *testing.T) {
 	initRegexp()
 	assert.Equal(t, "mama <URL>", changeLine("mama http://www.delfi.lt"))
 	assert.Equal(t, "mama <URL> ir", changeLine("mama http://delfi.lt?olia?tatata=tatat  ir"))
-	assert.Equal(t, "mama <URL>", changeLine("mama http://www.delfi.lt"))
+	assert.Equal(t, "mama www.delfi.lt", changeLine("mama www.delfi.lt"))
 }
 
 func TestEmail(t *testing.T) {
@@ -63,11 +63,17 @@ func TestNumber(t *testing.T) {
 	assert.Equal(t, "<NUMERACIJA> mama", changeLine("1.2.3. mama"))
 	assert.Equal(t, "<NUMERACIJA> mama", changeLine("10.20.30. mama"))
 	assert.Equal(t, "<NUMERACIJA> mama", changeLine("1) mama"))
+	assert.Equal(t, "<NUMERACIJA> mama", changeLine("500.300.30. mama"))
 }
 
 func TestStar(t *testing.T) {
 	initRegexp()
-	assert.Equal(t, "<NUMERACIJA> mama", changeLine("* mama"))
+	assert.Equal(t, "<PUNKTAS> mama", changeLine("* mama"))
+}
+
+func TestDash(t *testing.T) {
+	initRegexp()
+	assert.Equal(t, "<PUNKTAS> mama", changeLine("- mama"))
 }
 
 func TestNumberRoman(t *testing.T) {
@@ -76,6 +82,16 @@ func TestNumberRoman(t *testing.T) {
 	assert.Equal(t, "<NUMERACIJA> mama", changeLine("IX) mama"))
 	assert.Equal(t, "<NUMERACIJA> mama", changeLine("ix. mama"))
 	assert.Equal(t, "<NUMERACIJA> mama", changeLine("ix) mama"))
+}
+
+func TestNumberRomanPart(t *testing.T) {
+	initRegexp()
+	assert.Equal(t, "<SKYRIUS> mama", changeLine("IX skyrius. mama"))
+}
+
+func TestAppendix(t *testing.T) {
+	initRegexp()
+	assert.Equal(t, "<PRIEDAS> mama", changeLine("8 priedas. mama"))
 }
 
 func TestDropHyperlink(t *testing.T) {

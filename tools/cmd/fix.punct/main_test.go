@@ -17,6 +17,10 @@ func TestFixes(t *testing.T) {
 	assert.Equal(t, "mama - olia", changeLine("mama-olia"))
 }
 
+func TestLeavesInQuotes(t *testing.T) {
+	assert.Equal(t, "„mama-olia“", changeLine("„mama-olia“"))
+}
+
 func TestLeavesNumbers(t *testing.T) {
 	assert.Equal(t, "2015.12.12", changeLine("2015.12.12"))
 	assert.Equal(t, "2015-12-12", changeLine("2015-12-12"))
