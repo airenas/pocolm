@@ -88,7 +88,7 @@ func (l *Cache) getData(w string) *lInfo {
 
 func (l *Cache) getDataFromServer(w string) *lInfo {
 	var res lInfo
-	if unicode.IsLetter([]rune(w)[0]) && !hasNonLT(w) && !hasHTTPSymbols(w) {
+	if unicode.IsLetter([]rune(w)[0]) && !HasNonLT(w) && !hasHTTPSymbols(w) {
 		r, err := Analyze(w)
 
 		if err != nil {
@@ -253,7 +253,8 @@ func isLt(r *Result) bool {
 
 var encoder = charmap.ISO8859_13.NewEncoder()
 
-func hasNonLT(w string) bool {
+//HasNonLT non lt letters
+func HasNonLT(w string) bool {
 	_, err := encoder.String(w)
 	return err != nil
 }

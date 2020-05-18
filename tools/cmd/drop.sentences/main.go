@@ -59,6 +59,10 @@ func calc(line string, lm lemaLt) (int, int) {
 	lt := 0
 	nlt := 0
 	for _, w := range strs {
+		if lema.HasNonLT(w) {
+			return 0, 1
+		}
+
 		t := getType(w, lm)
 		if t == "lt" {
 			lt++

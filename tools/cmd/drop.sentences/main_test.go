@@ -36,3 +36,10 @@ func TestDrop(t *testing.T) {
 	assert.Equal(t, "", changeLine("olia ir kas", lmCache))
 }
 
+func TestDropNonLtLetter(t *testing.T) {
+	assert.Equal(t, "", changeLine("ሀsutartis ir ir ir ir ir ir ", lmCache))
+}
+
+func TestDropJustNumbers(t *testing.T) {
+	assert.Equal(t, "", changeLine("0.0 1,000", lmCache))
+}
