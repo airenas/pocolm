@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	cmd.InitApp()
 	cmd.ProcessByLine(processLine)
 }
 

@@ -21,7 +21,7 @@ func init() {
 func PureWord(w string) string {
 	rs := []rune(w)
 	l := len(rs)
-	for ; l > 0 && isPunct(rs[l-1]); l-- {
+	for ; l > 0 && IsPunct(rs[l-1]); l-- {
 	}
 	rs = rs[0:l]
 	if len(rs) > 0 && rs[0] == StartQuote {
@@ -33,7 +33,8 @@ func PureWord(w string) string {
 	return string(rs)
 }
 
-func isPunct(r rune) bool {
+//IsPunct return true is rune is punctuation
+func IsPunct(r rune) bool {
 	_, ok := Punctuations[r]
 	return ok
 }

@@ -18,6 +18,7 @@ import (
 type lInfo struct {
 	abbreviation bool
 	proper       bool
+	regular      bool
 	lt           bool
 	number       bool
 }
@@ -39,10 +40,16 @@ type Cache struct {
 // 	return r.abbreviation
 // }
 
-//IsProper returns true if word is proper
-func (l *Cache) IsProper(w string) bool {
+//RegularAndProper returns true if word can be proper and also is regular
+func (l *Cache) RegularAndProper(w string) bool {
 	r := l.getData(w)
-	return r.proper
+	return r.proper && r.regular
+}
+
+//AlwaysProper returns true if word is only proper
+func (l *Cache) AlwaysProper(w string) bool {
+	r := l.getData(w)
+	return r.proper && !r.regular
 }
 
 // func (l *Lema) IsLt(w string) bool {
@@ -51,12 +58,16 @@ func (l *Cache) IsProper(w string) bool {
 // }
 
 //NewCache creates lema cache
-func NewCache() *Cache {
+func NewCache() (*Cache, error) {
 	l := Cache{}
+	l.words = make(map[string]*lInfo)
 	l.vFileName = l.vocabFile()
-	l.loadMap()
+	err := l.loadMap()
+	if err != nil {
+		return nil, err
+	}
 	go l.runSave()
-	return &l
+	return &l, nil
 }
 
 func (l *Cache) getData(w string) *lInfo {
@@ -98,16 +109,18 @@ func (l *Cache) vocabFile() string {
 	return dir
 }
 
-func (l *Cache) loadMap() {
+func (l *Cache) loadMap() error {
 	l.m.Lock()
 	defer l.m.Unlock()
 
-	l.words = make(map[string]*lInfo)
 	_, err := os.Stat(l.vFileName)
 	if os.IsNotExist(err) {
-		return
+		return nil
 	}
-	l.loadVocab(l.vFileName)
+	if err != nil {
+		return err
+	}
+	return l.loadVocab(l.vFileName)
 }
 
 //Close finalizes cache - saves to disk
@@ -157,30 +170,41 @@ func toStr(l *lInfo) string {
 	return res
 }
 
-func (l *Cache) loadVocab(f string) {
+func (l *Cache) loadVocab(f string) error {
 	file, err := os.Open(f)
 	if err != nil {
-		panic(err)
+		return err
 	}
+	defer file.Close()
 
-	rd := bufio.NewReader(file)
+	return l.loadReader(file)
+}
 
+func (l *Cache) loadReader(reader io.Reader) error {
+	rd := bufio.NewReader(reader)
 	for {
 		line, err := rd.ReadString('\n')
 		if err != nil {
 			if err == io.EOF {
 				break
 			}
-			panic(errors.Wrap(err, "Read file line error"))
+			return errors.Wrap(err, "Read file line error")
 		}
-		strs := strings.Split(line, " ")
-		li := lInfo{}
-		li.proper = strings.Index(strs[1], "P") > -1
-		li.abbreviation = strings.Index(strs[1], "A") > -1
-		li.lt = strings.Index(strs[1], "L") > -1
-		li.number = strings.Index(strs[1], "N") > -1
-		l.words[strs[0]] = &li
+		line = strings.TrimSpace(line)
+		if len(line) > 0 {
+			strs := strings.Split(line, " ")
+			if len(strs) < 2 {
+				return errors.Errorf("Wrong line '%s'", line)
+			}
+			li := lInfo{}
+			li.proper = strings.Index(strs[1], "P") > -1
+			li.abbreviation = strings.Index(strs[1], "A") > -1
+			li.lt = strings.Index(strs[1], "L") > -1
+			li.number = strings.Index(strs[1], "N") > -1
+			l.words[strs[0]] = &li
+		}
 	}
+	return nil
 }
 
 func isProper(r *Result) bool {
@@ -223,4 +247,11 @@ func hasNonLT(w string) bool {
 
 func hasHTTPSymbols(w string) bool {
 	return strings.Index(w, "/") > 0 || strings.Index(w, "%") > 0 || strings.Index(w, ">") > 0
+}
+
+//NewTestCache creates lema cache for testing
+func NewTestCache(rd io.Reader) (*Cache, error) {
+	c := Cache{}
+	c.words = make(map[string]*lInfo)
+	return &c, c.loadReader(rd)
 }

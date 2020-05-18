@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"os"
 	"regexp"
 	"strings"
 
@@ -20,7 +19,7 @@ var replaces []*replace
 var regDots *regexp.Regexp
 
 func main() {
-	log.SetOutput(os.Stderr)
+	cmd.InitApp()
 	initRegexp()
 	cmd.ProcessByLine(processLine)
 }

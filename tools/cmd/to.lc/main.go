@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"strings"
 	"unicode"
 
@@ -11,11 +12,16 @@ import (
 )
 
 type lemaProper interface {
-	IsProper(string) bool
+	AlwaysProper(string) bool
+	RegularAndProper(string) bool
 }
 
 func main() {
-	lm := lema.NewCache()
+	cmd.InitApp()
+	lm, err := lema.NewCache()
+	if err != nil {
+		log.Fatal(err)
+	}
 	defer lm.Close()
 	cmd.ProcessByLine(func(line string) (string, error) { return changeLine(strings.TrimSpace(line), lm), nil })
 }
@@ -45,18 +51,40 @@ func changeWord(w string, lm lemaProper) string {
 	if util.SpecialWordRegexp.MatchString(wc) {
 		return w
 	}
-	if lm.IsProper(wc) {
-		return changeTitle(w)
+	if isNumber(wc) {
+		return w
+	}
+	if isQuoted(w) && lm.RegularAndProper(wc) {
+		return changeToTitle(w)
+	}
+	if lm.AlwaysProper(wc) {
+		return changeToTitle(w)
 	}
 	return strings.ToLower(w)
 }
 
-func changeTitle(w string) string {
+func changeToTitle(w string) string {
 	r := []rune(strings.ToLower(w))
 	i := 0
-	if len(r) > 1 && r[0] == punct.StartQuote {
+	if isQuoted(w) {
 		i = 1
 	}
 	r[i] = unicode.ToUpper(r[i])
 	return string(r)
+}
+
+func isNumber(w string) bool {
+	rns := []rune(w)
+	for _, r := range rns {
+		if (unicode.IsNumber(r)) || punct.IsPunct(r) {
+			continue
+		}
+		return false
+	}
+	return true
+}
+
+func isQuoted(w string) bool {
+	rns := []rune(w)
+	return len(rns) > 0 && rns[0] == punct.StartQuote
 }

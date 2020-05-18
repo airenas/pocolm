@@ -24,7 +24,9 @@ $(dataDir)/working/corpus.nopar.txt: $(dataDir)/working/corpus.fixquotes.txt
 	pv $^ | $(toolsDir)/drop.parentheses > $@	
 $(dataDir)/working/corpus.mapped.txt: $(dataDir)/working/corpus.nopar.txt
 	pv $^ | $(toolsDir)/map.symbols > $@		
-$(dataDir)/working/corpus.lc.txt: $(dataDir)/working/corpus.mapped.txt
+$(dataDir)/working/corpus.fixpunct.txt: $(dataDir)/working/corpus.mapped.txt
+	pv $^ | $(toolsDir)/map.symbols > $@		
+$(dataDir)/working/corpus.lc.txt: $(dataDir)/working/corpus.fixpunct.txt
 	pv $^ | $(toolsDir)/to.lc > $@			
 
 prepare-data: $(dataDir)/working/corpus.lc.txt

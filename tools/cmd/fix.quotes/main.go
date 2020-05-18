@@ -22,6 +22,7 @@ func init() {
 }
 
 func main() {
+	cmd.InitApp()
 	cmd.ProcessByLine(processLine)
 }
 

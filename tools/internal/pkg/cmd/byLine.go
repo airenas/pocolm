@@ -12,8 +12,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-//ProcessByLine main function for tool to read file and write file
-func ProcessByLine(procF func(string) (string, error)) {
+//InitApp main function for tool to init
+func InitApp() {
 	log.SetOutput(os.Stderr)
 	fs := flag.CommandLine
 	fs.Usage = func() {
@@ -21,6 +21,10 @@ func ProcessByLine(procF func(string) (string, error)) {
 		fs.PrintDefaults()
 	}
 	fs.Parse(os.Args[1:])
+}
+
+//ProcessByLine main function for tool to read file and write file
+func ProcessByLine(procF func(string) (string, error)) {
 	f, err := util.NewReadWrapper(flag.Arg(0))
 	if err != nil {
 		log.Fatal(err)
