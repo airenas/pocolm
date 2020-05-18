@@ -25,11 +25,14 @@ $(dataDir)/working/corpus.nopar.txt: $(dataDir)/working/corpus.fixquotes.txt
 $(dataDir)/working/corpus.mapped.txt: $(dataDir)/working/corpus.nopar.txt
 	pv $^ | $(toolsDir)/map.symbols > $@		
 $(dataDir)/working/corpus.fixpunct.txt: $(dataDir)/working/corpus.mapped.txt
-	pv $^ | $(toolsDir)/map.symbols > $@		
+	pv $^ | $(toolsDir)/fix.punct > $@		
 $(dataDir)/working/corpus.lc.txt: $(dataDir)/working/corpus.fixpunct.txt
-	pv $^ | $(toolsDir)/to.lc > $@			
+	pv $^ | $(toolsDir)/to.lc > $@
+$(dataDir)/working/corpus.ready.txt: $(dataDir)/working/corpus.lc.txt
+	pv $^ | $(toolsDir)/drop.sentences > $@			
 
-prepare-data: $(dataDir)/working/corpus.lc.txt
+
+prepare-data: $(dataDir)/working/corpus.ready.txt
 ##########################################################################################
 info:
 	@echo "POCOLM_ROOT=$(POCOLM_ROOT)"
