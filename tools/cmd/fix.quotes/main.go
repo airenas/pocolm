@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/airenas/pocolm/tools/internal/pkg/cmd"
+	"github.com/airenas/pocolm/tools/internal/pkg/punct"
 )
 
 var quoteSymbols map[rune]bool
@@ -83,6 +84,6 @@ func extractWordSep(s string) (string, string, string) {
 }
 
 func quoteLt(rns []rune) []rune {
-	rns = append([]rune("„"), rns...)
-	return append(rns, '“')
+	rns = append([]rune{punct.StartQuote}, rns...)
+	return append(rns, punct.EndQuote)
 }

@@ -53,6 +53,10 @@ func changeWord(w string, lm lemaProper) string {
 
 func changeTitle(w string) string {
 	r := []rune(strings.ToLower(w))
-	r[0] = unicode.ToUpper(r[0])
+	i := 0
+	if len(r) > 1 && r[0] == punct.StartQuote {
+		i = 1
+	}
+	r[i] = unicode.ToUpper(r[i])
 	return string(r)
 }

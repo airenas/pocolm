@@ -19,6 +19,12 @@ func TestChange(t *testing.T) {
 	assert.Equal(t, "olia ir kas", changeLine("Olia Ir Kas", lm))
 }
 
+func TestQuoted(t *testing.T) {
+	lm := lema.NewCache()
+	defer lm.Close()
+	assert.Equal(t, "„olia“ ir „Vilnius“", changeLine("„Olia“ Ir „VILNIUS“", lm))
+}
+
 func TestChangeAll(t *testing.T) {
 	lm := lema.NewCache()
 	defer lm.Close()
