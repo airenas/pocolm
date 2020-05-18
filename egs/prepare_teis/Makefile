@@ -24,13 +24,17 @@ $(dataDir)/working/corpus.nopar.txt: $(dataDir)/working/corpus.fixquotes.txt
 	pv $^ | $(toolsDir)/drop.parentheses > $@	
 $(dataDir)/working/corpus.mapped.txt: $(dataDir)/working/corpus.nopar.txt
 	pv $^ | $(toolsDir)/map.symbols > $@		
+$(dataDir)/working/corpus.lc.txt: $(dataDir)/working/corpus.mapped.txt
+	pv $^ | $(toolsDir)/to.lc > $@			
 
-prepare-data: $(dataDir)/working/corpus.mapped.txt
+prepare-data: $(dataDir)/working/corpus.lc.txt
 ##########################################################################################
 info:
 	@echo "POCOLM_ROOT=$(POCOLM_ROOT)"
 ##########################################################################################
 clean:
 	rm -rf $(dataDir)
+clean-last:
+	rm -f $(dataDir)/working/corpus.lc.txt	
 ##########################################################################################
 .PHONY: 

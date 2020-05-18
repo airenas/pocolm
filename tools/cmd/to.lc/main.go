@@ -17,7 +17,7 @@ type lemaProper interface {
 func main() {
 	lm := lema.NewCache()
 	defer lm.Close()
-	cmd.ProcessByLine(func(line string) (string, error) { return changeLine(line, lm), nil })
+	cmd.ProcessByLine(func(line string) (string, error) { return changeLine(strings.TrimSpace(line), lm), nil })
 }
 
 func changeLine(line string, lm lemaProper) string {

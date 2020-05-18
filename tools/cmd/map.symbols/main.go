@@ -30,22 +30,15 @@ func initRegexp() {
 	replaces = append(replaces, &replace{str: "<EMAIL>", regxp: util.EMailRegexp})
 	replaces = append(replaces, &replace{str: "<EMAIL>", regxp: newRegexp("mailto:<EMAIL>")})
 	replaces = append(replaces, &replace{str: "<URL>", regxp: xurls.Relaxed()})
-	replaces = append(replaces, &replace{str: " <PILDOMA> ", regxp: newRegexp("[_]{2,}")})
-	replaces = append(replaces, &replace{str: " <PILDOMA> ", regxp: newRegexp("[\\.]{4,}")})
-	replaces = append(replaces, &replace{str: " <PILDOMA> ", regxp: newRegexp(" [\\.]{3,}")})
+	replaces = append(replaces, &replace{str: " <PILDOMA> ", regxp: newRegexp("[_]{2,}|[\\.]{4,}| [\\.]{3,}")})
 
-	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^[A-Z]\\)")})
-	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^[a-z]\\)")})
-	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^[A-Z]\\.")})
-	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^[a-z]\\.")})
+	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("(?i)^[A-Z][\\)\\.]")})
+	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("(?i)^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})[\\.)]")})
 
 	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^(([0-9]){1,2}\\.){1,}")})
-	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^[a-z]\\)")})
 
-	replaces = append(replaces, &replace{str: " ", regxp: newRegexp("HYPERLINK")})
-	replaces = append(replaces, &replace{str: " ", regxp: newRegexp("FORMTEXT")})
-	replaces = append(replaces, &replace{str: " ", regxp: newRegexp("PAGEREF _Toc\\d+ \\\\h \\d+")})
-	replaces = append(replaces, &replace{str: " ", regxp: newRegexp("MERGEFIELD [„]?[\\p{L}_\\d]+[“]?")})
+	replaces = append(replaces, &replace{str: " ",
+		regxp: newRegexp("HYPERLINK|FORMTEXT|PAGEREF _Toc\\d+ \\\\h \\d+|MERGEFIELD [„]?[\\p{L}_\\d]+[“]?")})
 
 	regDots = newRegexp("\\. \\.")
 }

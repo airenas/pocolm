@@ -64,6 +64,14 @@ func TestNumber(t *testing.T) {
 	assert.Equal(t, "<NUMERACIJA> mama", changeLine("10.20.30. mama"))
 }
 
+func TestNumberRoman(t *testing.T) {
+	initRegexp()
+	assert.Equal(t, "<NUMERACIJA> mama", changeLine("IX. mama"))
+	assert.Equal(t, "<NUMERACIJA> mama", changeLine("IX) mama"))
+	assert.Equal(t, "<NUMERACIJA> mama", changeLine("ix. mama"))
+	assert.Equal(t, "<NUMERACIJA> mama", changeLine("ix) mama"))
+}
+
 func TestDropHyperlink(t *testing.T) {
 	initRegexp()
 	assert.Equal(t, "mama", changeLine("mama HYPERLINK"))
@@ -87,4 +95,40 @@ func TestDropMergefield(t *testing.T) {
 	assert.Equal(t, "mama", changeLine("mama MERGEFIELD Turto_aprašas"))
 	assert.Equal(t, "mama aaaa", changeLine("mama MERGEFIELD „Turto_aprašas“ aaaa"))
 	assert.Equal(t, "mama aaaa", changeLine("mama MERGEFIELD „Turto_22_aprašas“ aaaa"))
+}
+
+func benchmarkRegexp(b *testing.B, replaces []*replace, s string) {
+	for i := 0; i < b.N; i++ {
+		for _, rep := range replaces {
+			s = rep.regxp.ReplaceAllString(s, rep.str)
+		}
+	}
+}
+
+func BenchmarkTwo(b *testing.B) {
+	replaces = make([]*replace, 0)
+	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^[A-Z]\\)")})
+	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^[a-z]\\)")})
+	benchmarkRegexp(b, replaces, "a. asdsad dasdasd das dsad ds das")
+}
+
+func BenchmarkOne(b *testing.B) {
+	replaces = make([]*replace, 0)
+	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("(?i)^[A-Z]\\)")})
+	benchmarkRegexp(b, replaces, "a. asdsad dasdasd das dsad ds das")
+}
+
+func BenchmarkFour(b *testing.B) {
+	replaces = make([]*replace, 0)
+	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^[A-Z]\\)")})
+	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^[a-z]\\)")})
+	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^[A-Z]\\.")})
+	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^[a-z]\\.")})
+	benchmarkRegexp(b, replaces, "a. asdsad dasdasd das dsad ds das")
+}
+
+func BenchmarkOneAll(b *testing.B) {
+	replaces = make([]*replace, 0)
+	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("(?i)^[A-Z]\\[\\)\\.]")})
+	benchmarkRegexp(b, replaces, "a. asdsad dasdasd das dsad ds das")
 }
