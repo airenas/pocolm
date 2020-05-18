@@ -18,6 +18,13 @@ func TestURL(t *testing.T) {
 	assert.Equal(t, "mama <URL>", changeLine("mama http://www.delfi.lt"))
 }
 
+func TestEmail(t *testing.T) {
+	initRegexp()
+	assert.Equal(t, "mama <EMAIL>", changeLine("mama a@a.lt"))
+	assert.Equal(t, "mama <EMAIL> ir", changeLine("mama ai@delfi.lt  ir"))
+	assert.Equal(t, "<EMAIL> olia", changeLine("aaa@adelfi.lt olia"))
+}
+
 func TestUnderscore(t *testing.T) {
 	initRegexp()
 	assert.Equal(t, "mama <PILDOMA> <PILDOMA>", changeLine("mama __ _______"))

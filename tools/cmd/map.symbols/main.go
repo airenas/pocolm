@@ -27,6 +27,7 @@ func main() {
 
 func initRegexp() {
 	replaces = make([]*replace, 0)
+	replaces = append(replaces, &replace{str: "<EMAIL>", regxp: util.EMailRegexp})
 	replaces = append(replaces, &replace{str: "<URL>", regxp: xurls.Strict()})
 	replaces = append(replaces, &replace{str: " <PILDOMA> ", regxp: newRegexp("[_]{2,}")})
 	replaces = append(replaces, &replace{str: " <PILDOMA> ", regxp: newRegexp("[\\.]{4,}")})
