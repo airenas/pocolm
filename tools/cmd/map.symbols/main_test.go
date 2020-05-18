@@ -62,6 +62,12 @@ func TestNumber(t *testing.T) {
 	assert.Equal(t, "2005. mama", changeLine("2005. mama"))
 	assert.Equal(t, "<NUMERACIJA> mama", changeLine("1.2.3. mama"))
 	assert.Equal(t, "<NUMERACIJA> mama", changeLine("10.20.30. mama"))
+	assert.Equal(t, "<NUMERACIJA> mama", changeLine("1) mama"))
+}
+
+func TestStar(t *testing.T) {
+	initRegexp()
+	assert.Equal(t, "<NUMERACIJA> mama", changeLine("* mama"))
 }
 
 func TestNumberRoman(t *testing.T) {

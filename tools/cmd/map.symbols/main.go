@@ -36,6 +36,8 @@ func initRegexp() {
 	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("(?i)^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})[\\.)]")})
 
 	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^(([0-9]){1,2}\\.){1,}")})
+	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^([0-9]){1,2}\\)")})
+	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^\\* ")})
 
 	replaces = append(replaces, &replace{str: " ",
 		regxp: newRegexp("HYPERLINK|FORMTEXT|PAGEREF _Toc\\d+ \\\\h \\d+|MERGEFIELD [„]?[\\p{L}_\\d]+[“]?")})
