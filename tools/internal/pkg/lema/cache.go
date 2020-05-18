@@ -32,13 +32,14 @@ type Cache struct {
 	vFileName string
 }
 
-// func (l *Lema) IsAbbreviation(w string) bool {
-// 	if strings.HasSuffix(w, ".") && strings.Title(w) == w && len(w) == 2 {
-// 		return true
-// 	}
-// 	r := l.getData(w)
-// 	return r.abbreviation
-// }
+//IsAbbreviation returns true of string is abbreviation
+func (l *Cache) IsAbbreviation(w string) bool {
+	if strings.HasSuffix(w, ".") && strings.Title(w) == w && len(w) == 2 {
+		return true
+	}
+	r := l.getData(w)
+	return r.abbreviation
+}
 
 //RegularAndProper returns true if word can be proper and also is regular
 func (l *Cache) RegularAndProper(w string) bool {
@@ -52,10 +53,11 @@ func (l *Cache) AlwaysProper(w string) bool {
 	return r.proper && !r.regular
 }
 
-// func (l *Lema) IsLt(w string) bool {
-// 	r := l.getData(w)
-// 	return r.lt
-// }
+//IsLt returns true if string is lithianian word
+func (l *Cache) IsLt(w string) bool {
+	r := l.getData(w)
+	return r.lt
+}
 
 //NewCache creates lema cache
 func NewCache() (*Cache, error) {
@@ -246,9 +248,6 @@ func isAbbreviation(r *Result) bool {
 }
 
 func isLt(r *Result) bool {
-	if r.Suffix != "" { // ignore our suffix check
-		return false
-	}
 	return len(r.Mi) > 0
 }
 

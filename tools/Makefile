@@ -1,4 +1,5 @@
-tools=clear.symbols fix.quotes drop.parentheses map.symbols to.lc fix.punct
+tools=clear.symbols fix.quotes drop.parentheses map.symbols to.lc fix.punct \
+	drop.sentences
 
 #######################################################################
 dist_dir=$(CURDIR)/bin

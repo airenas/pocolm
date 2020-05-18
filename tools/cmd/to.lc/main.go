@@ -51,7 +51,7 @@ func changeWord(w string, lm lemaProper) string {
 	if util.SpecialWordRegexp.MatchString(wc) {
 		return w
 	}
-	if isNumber(wc) {
+	if lema.IsNumber(wc) {
 		return w
 	}
 	if isQuoted(w) && lm.RegularAndProper(wc) {
@@ -71,17 +71,6 @@ func changeToTitle(w string) string {
 	}
 	r[i] = unicode.ToUpper(r[i])
 	return string(r)
-}
-
-func isNumber(w string) bool {
-	rns := []rune(w)
-	for _, r := range rns {
-		if (unicode.IsNumber(r)) || punct.IsPunct(r) {
-			continue
-		}
-		return false
-	}
-	return true
 }
 
 func isQuoted(w string) bool {

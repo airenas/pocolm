@@ -12,6 +12,18 @@ import (
 	"github.com/pkg/errors"
 )
 
+//Config app configuration
+var Config cmdData
+
+type cmdData struct {
+	PrintF   func(io.Writer, string) error
+	ProcessF func(string) (string, error)
+}
+
+func init() {
+	Config.PrintF = func(dest io.Writer, line string) error { _, err := fmt.Fprintf(dest, "%s\n", line); return err }
+}
+
 //InitApp main function for tool to init
 func InitApp() {
 	log.SetOutput(os.Stderr)
@@ -52,7 +64,7 @@ func ProcessByLine(procF func(string) (string, error)) {
 		if err != nil {
 			log.Fatal(errors.Wrapf(err, "Line %d", ln))
 		}
-		_, err = fmt.Fprintf(destination, "%s\n", nLine)
+		err = Config.PrintF(destination, nLine)
 		if err != nil {
 			log.Fatal(errors.Wrap(err, "Cant write file"))
 		}
