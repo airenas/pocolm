@@ -28,7 +28,8 @@ func main() {
 func initRegexp() {
 	replaces = make([]*replace, 0)
 	replaces = append(replaces, &replace{str: "<EMAIL>", regxp: util.EMailRegexp})
-	replaces = append(replaces, &replace{str: "<URL>", regxp: xurls.Strict()})
+	replaces = append(replaces, &replace{str: "<EMAIL>", regxp: newRegexp("mailto:<EMAIL>")})
+	replaces = append(replaces, &replace{str: "<URL>", regxp: xurls.Relaxed()})
 	replaces = append(replaces, &replace{str: " <PILDOMA> ", regxp: newRegexp("[_]{2,}")})
 	replaces = append(replaces, &replace{str: " <PILDOMA> ", regxp: newRegexp("[\\.]{4,}")})
 	replaces = append(replaces, &replace{str: " <PILDOMA> ", regxp: newRegexp(" [\\.]{3,}")})
@@ -40,6 +41,11 @@ func initRegexp() {
 
 	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^(([0-9]){1,2}\\.){1,}")})
 	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^[a-z]\\)")})
+
+	replaces = append(replaces, &replace{str: " ", regxp: newRegexp("HYPERLINK")})
+	replaces = append(replaces, &replace{str: " ", regxp: newRegexp("FORMTEXT")})
+	replaces = append(replaces, &replace{str: " ", regxp: newRegexp("PAGEREF _Toc\\d+ \\\\h \\d+")})
+	replaces = append(replaces, &replace{str: " ", regxp: newRegexp("MERGEFIELD [„]?[\\p{L}_\\d]+[“]?")})
 
 	regDots = newRegexp("\\. \\.")
 }

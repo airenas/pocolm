@@ -25,6 +25,11 @@ func TestEmail(t *testing.T) {
 	assert.Equal(t, "<EMAIL> olia", changeLine("aaa@adelfi.lt olia"))
 }
 
+func TestEmailFix(t *testing.T) {
+	initRegexp()
+	assert.Equal(t, "mama <EMAIL>", changeLine("mama mailto:a@a.lt"))
+}
+
 func TestUnderscore(t *testing.T) {
 	initRegexp()
 	assert.Equal(t, "mama <PILDOMA> <PILDOMA>", changeLine("mama __ _______"))
@@ -57,4 +62,29 @@ func TestNumber(t *testing.T) {
 	assert.Equal(t, "2005. mama", changeLine("2005. mama"))
 	assert.Equal(t, "<NUMERACIJA> mama", changeLine("1.2.3. mama"))
 	assert.Equal(t, "<NUMERACIJA> mama", changeLine("10.20.30. mama"))
+}
+
+func TestDropHyperlink(t *testing.T) {
+	initRegexp()
+	assert.Equal(t, "mama", changeLine("mama HYPERLINK"))
+}
+
+func TestDropFormtext(t *testing.T) {
+	initRegexp()
+	assert.Equal(t, "mama", changeLine("mama FORMTEXT"))
+}
+
+func TestDropPageRef(t *testing.T) {
+	initRegexp()
+	assert.Equal(t, "mama", changeLine("mama PAGEREF _Toc305158161 \\h 29"))
+	assert.Equal(t, "mama", changeLine("mama PAGEREF _Toc305158161 \\h 2"))
+	assert.Equal(t, "mama aaaa", changeLine("mama PAGEREF _Toc305158161 \\h 2 aaaa"))
+}
+
+func TestDropMergefield(t *testing.T) {
+	initRegexp()
+	assert.Equal(t, "mama", changeLine("mama MERGEFIELD „Turto_aprašas“"))
+	assert.Equal(t, "mama", changeLine("mama MERGEFIELD Turto_aprašas"))
+	assert.Equal(t, "mama aaaa", changeLine("mama MERGEFIELD „Turto_aprašas“ aaaa"))
+	assert.Equal(t, "mama aaaa", changeLine("mama MERGEFIELD „Turto_22_aprašas“ aaaa"))
 }
