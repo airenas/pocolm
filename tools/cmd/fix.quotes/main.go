@@ -2,6 +2,7 @@ package main
 
 import (
 	"strings"
+	"unicode"
 
 	"github.com/airenas/pocolm/tools/internal/pkg/cmd"
 	"github.com/airenas/pocolm/tools/internal/pkg/punct"
@@ -44,7 +45,7 @@ func changeLine(line string) string {
 		rns := []rune(w)
 		q := quoted(rns)
 		rns = trimQuotes(rns)
-		if q && len(rns) > 0 {
+		if q && len(rns) > 0 && isOKForQuote(rns) {
 			rns = quoteLt(rns)
 		}
 		res = append(res, s1+string(rns)+s2)
@@ -77,14 +78,25 @@ func extractWordSep(s string) (string, string, string) {
 	}
 	for ; i2 > i1 && sepSymbols[rns[i2]]; i2-- {
 	}
-	// s2 := ""
-	// if i2 < len(rns) {
-	// 	s2 = string(rns[i2:])
-	// }
 	return string(rns[:i1]), string(rns[i1 : i2+1]), string(rns[i2+1:])
 }
 
 func quoteLt(rns []rune) []rune {
 	rns = append([]rune{punct.StartQuote}, rns...)
 	return append(rns, punct.EndQuote)
+}
+
+func isOKForQuote(rns []rune) bool {
+	for i, r := range rns {
+		if i == 0 && unicode.IsLower(r) {
+			return false
+		}
+		if i > 0 && i == (len(rns)-1) && r == '.' {
+			return true
+		}
+		if !(unicode.IsLetter(r) || unicode.IsDigit(r)) {
+			return false
+		}
+	}
+	return true
 }
