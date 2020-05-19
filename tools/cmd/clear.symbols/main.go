@@ -36,9 +36,7 @@ func changeLine(line string) string {
 	for _, r := range runes {
 		res = append(res, changeSymbol(r)...)
 	}
-	r := string(res)
-	r = util.MultiSpacesRegexp.ReplaceAllString(r, " ")
-	return strings.TrimSpace(r)
+	return util.FixSpaces(string(res))
 }
 
 func changeSymbol(r rune) []rune {
