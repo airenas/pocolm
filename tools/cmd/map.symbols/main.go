@@ -29,17 +29,17 @@ func initRegexp() {
 	replaces = make([]*replace, 0)
 	replaces = append(replaces, &replace{str: "<EMAIL>", regxp: util.EMailRegexp})
 	replaces = append(replaces, &replace{str: "<EMAIL>", regxp: newRegexp("mailto:<EMAIL>")})
-	replaces = append(replaces, &replace{str: "<URL>", regxp: xurls.Relaxed()})
+	replaces = append(replaces, &replace{str: "<URL>", regxp: xurls.Strict()})
 	replaces = append(replaces, &replace{str: " <PILDOMA> ", regxp: newRegexp("[_]{2,}|[\\.]{4,}| [\\.]{3,}")})
 
 	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("(?i)^[A-Z][\\)\\.]")})
 	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("(?i)^" + romanNumbers + "[\\.)]")})
 
-	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^(([0-9]){1,2}\\.){1,}")})
-	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^([0-9]){1,2}\\)")})
-	replaces = append(replaces, &replace{str: " <NUMERACIJA> $3", regxp: newRegexp("^(([0-9]){1,2})( priedas.)")})
+	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^(([0-9]){1,3}\\.){1,}")})
+	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^([0-9]){1,3}\\)")})
+	replaces = append(replaces, &replace{str: " <NUMERACIJA> $3", regxp: newRegexp("^(([0-9]){1,3})( priedas.)")})
 	replaces = append(replaces, &replace{str: " <NUMERACIJA> $5", regxp: newRegexp("^(" + romanNumbers + ")( skyrius.)")})
-	replaces = append(replaces, &replace{str: " <NUMERACIJA> ", regxp: newRegexp("^\\* ")})
+	replaces = append(replaces, &replace{str: " <PUNKTAS> ", regxp: newRegexp("^[\\*-] ")})
 
 	replaces = append(replaces, &replace{str: " ",
 		regxp: newRegexp("HYPERLINK|FORMTEXT|PAGEREF _Toc\\d+ \\\\h \\d+|MERGEFIELD [„]?[\\p{L}_\\d]+[“]?")})

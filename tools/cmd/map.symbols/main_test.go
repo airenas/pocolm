@@ -64,6 +64,7 @@ func TestNumber(t *testing.T) {
 	assert.Equal(t, "<NUMERACIJA> mama", changeLine("10.20.30. mama"))
 	assert.Equal(t, "<NUMERACIJA> mama", changeLine("1) mama"))
 	assert.Equal(t, "<NUMERACIJA> mama", changeLine("500.300.30. mama"))
+	assert.Equal(t, "<NUMERACIJA> mama", changeLine("500) mama"))
 }
 
 func TestStar(t *testing.T) {
