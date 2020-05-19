@@ -45,7 +45,7 @@ func changeLine(line string) string {
 		}
 		res.WriteRune(rns[i])
 	}
-	return util.FixSpaces(rs)
+	return util.FixSpaces(res.String())
 }
 
 func findParenthesis(rns []rune, p rune) (int, bool) {
