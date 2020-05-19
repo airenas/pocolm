@@ -228,7 +228,7 @@ func isProper(r *Result) bool {
 
 func isRegular(r *Result) bool {
 	for _, mi := range r.Mi {
-		if !strings.HasPrefix(mi.Mi, "I") {
+		if !strings.HasPrefix(mi.Mi, "I") && !strings.HasPrefix(mi.Mi, "Y") {
 			return true
 		}
 	}
@@ -236,9 +236,6 @@ func isRegular(r *Result) bool {
 }
 
 func isAbbreviation(r *Result) bool {
-	if r.Suffix != "" { // ignore our suffix check
-		return false
-	}
 	for _, mi := range r.Mi {
 		if !strings.HasPrefix(mi.MiVdu, "Y") {
 			return false
@@ -248,7 +245,7 @@ func isAbbreviation(r *Result) bool {
 }
 
 func isLt(r *Result) bool {
-	return len(r.Mi) > 0
+	return len(r.Mi) > 0 && !isAbbreviation(r)
 }
 
 var encoder = charmap.ISO8859_13.NewEncoder()
