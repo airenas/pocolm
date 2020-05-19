@@ -1,6 +1,9 @@
 package util
 
-import "strings"
+import (
+	"strings"
+	"unicode"
+)
 
 //FixSpacesR removes double spaces and trims
 func FixSpacesR(s string) string {
@@ -24,4 +27,31 @@ func FixSpaces(s string) string {
 		ins = false
 	}
 	return res.String()
+}
+
+//DropSpaces removes spaces
+func DropSpaces(s string) string {
+	res := strings.Builder{}
+	rns := []rune(s)
+	res.Grow(len(s))
+	ins := false
+	pr := rune(-1)
+	for _, r := range rns {
+		if r == ' ' {
+			ins = ins || LetterDigit(pr)
+			continue
+		}
+		pr = r
+		if ins && res.Len() > 0 {
+			res.WriteRune(' ')
+		}
+		res.WriteRune(r)
+		ins = false
+	}
+	return res.String()
+}
+
+//LetterDigit returns true on letter digit
+func LetterDigit(r rune) bool {
+	return unicode.IsDigit(r) || unicode.IsLetter(r)
 }

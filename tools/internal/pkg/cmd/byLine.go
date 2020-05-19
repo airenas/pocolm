@@ -51,14 +51,16 @@ func ProcessByLine(procF func(string) (string, error)) {
 
 	rd := bufio.NewReader(f)
 	ln := 0
-	for {
+	end := false
+	for !end {
 		ln++
 		line, err := rd.ReadString('\n')
 		if err != nil {
 			if err == io.EOF {
-				break
+				end = true
+			} else {
+				log.Fatal(errors.Wrapf(err, "Line %d", ln))
 			}
-			log.Fatal(errors.Wrapf(err, "Line %d", ln))
 		}
 		nLine, err := procF(line)
 		if err != nil {
