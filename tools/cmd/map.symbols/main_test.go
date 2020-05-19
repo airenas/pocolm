@@ -86,12 +86,12 @@ func TestNumberRoman(t *testing.T) {
 
 func TestNumberRomanPart(t *testing.T) {
 	initRegexp()
-	assert.Equal(t, "<SKYRIUS> mama", changeLine("IX skyrius. mama"))
+	assert.Equal(t, "<NUMERACIJA> skyrius. mama", changeLine("IX skyrius. mama"))
 }
 
 func TestAppendix(t *testing.T) {
 	initRegexp()
-	assert.Equal(t, "<PRIEDAS> mama", changeLine("8 priedas. mama"))
+	assert.Equal(t, "<NUMERACIJA> priedas. mama", changeLine("8 priedas. mama"))
 }
 
 func TestDropHyperlink(t *testing.T) {
