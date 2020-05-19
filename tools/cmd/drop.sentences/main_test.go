@@ -19,7 +19,8 @@ ir wL
 kas w
 olia w
 sutartis w
-KAUNAS wPR	
+KAUNAS wPR
+h wA	
 `))
 	assert.Nil(t, err)
 }
@@ -37,22 +38,29 @@ func TestDrop(t *testing.T) {
 }
 
 func TestDropNonLtLetter(t *testing.T) {
+	initCache(t)
 	assert.Equal(t, "", changeLine("ሀsutartis ir ir ir ir ir ir ", lmCache))
 }
 
 func TestDropJustNumbers(t *testing.T) {
+	initCache(t)
 	assert.Equal(t, "", changeLine("0.0 1,000", lmCache))
 }
 
 func TestDropJustSpecial(t *testing.T) {
+	initCache(t)
 	assert.Equal(t, "", changeLine("<PILDOMA>", lmCache))
 }
 
 func TestDropJustAbbreviation(t *testing.T) {
-	assert.Equal(t, "", changeLine("h", lmCache))
+	initCache(t)
 	assert.Equal(t, "", changeLine("Tel.", lmCache))
+	assert.Equal(t, "", changeLine("h", lmCache))
 }
 
 func TestDropParenthesis(t *testing.T) {
-	assert.Equal(t, "", changeLine("(olia ir", lmCache))
+	initCache(t)
+	assert.Equal(t, "", changeLine("(olia ir ir ir ir ir ir", lmCache))
+	assert.Equal(t, "", changeLine("[olia ir ir ir ir ir ir", lmCache))
+	assert.Equal(t, "", changeLine("<olia ir ir ir ir ir ir", lmCache))
 }
