@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/airenas/pocolm/tools/internal/pkg/cmd"
+	"github.com/airenas/pocolm/tools/internal/pkg/util"
 )
 
 var parenthesesSymbols map[rune]rune
@@ -44,9 +45,7 @@ func changeLine(line string) string {
 		}
 		res.WriteRune(rns[i])
 	}
-	rs := res.String()
-	rs = strings.ReplaceAll(rs, "  ", " ")
-	return strings.TrimSpace(rs)
+	return util.FixSpaces(rs)
 }
 
 func findParenthesis(rns []rune, p rune) (int, bool) {
