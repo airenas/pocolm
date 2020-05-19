@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/airenas/pocolm/tools/internal/pkg/cmd"
+	"github.com/airenas/pocolm/tools/internal/pkg/util"
 )
 
 var replaceableSymbols map[rune][]rune
@@ -36,9 +37,8 @@ func changeLine(line string) string {
 		res = append(res, changeSymbol(r)...)
 	}
 	r := string(res)
-	r = strings.TrimSpace(r)
-	r = strings.ReplaceAll(r, "  ", " ")
-	return string(r)
+	r = util.MultiSpacesRegexp.ReplaceAllString(r, " ")
+	return strings.TrimSpace(r)
 }
 
 func changeSymbol(r rune) []rune {
