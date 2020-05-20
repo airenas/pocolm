@@ -16,7 +16,7 @@ const (
 
 func init() {
 	Punctuations = make(map[rune]bool)
-	for _, r := range ",./\\;:*&^%$#@!~?-+" {
+	for _, r := range ",./\\;:*&^%$#@!~?-+=" {
 		Punctuations[r] = true
 	}
 	parenthesesSymbols = make(map[rune]bool)
