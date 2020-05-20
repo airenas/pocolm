@@ -43,6 +43,9 @@ func TrimWord(w string, f func(rune) bool) (string, string, string) {
 
 //TrimQuote return word without lt quotes
 func TrimQuote(w string) string {
+	if w == "" {
+		return w
+	}
 	rns := []rune(w)
 	i1, i2 := 0, len(rns)-1
 	if rns[i1] == StartQuote {
