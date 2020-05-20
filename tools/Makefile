@@ -13,8 +13,16 @@ $(dist_dir)/%: cmd/% | $(dist_dir)
 #######################################################################
 build: $(dist_tools_files)
 #######################################################################
+benchmark:
+	go test ./.../... -bench=Benchmark
+benchmark-cpu:
+	go test ./.../$(gpkg)/... -bench=Benchmark -cpuprofile=.cpu.prof
+view-cpu:
+	go tool pprof -png .cpu.prof > .cpu.png
+	google-chrome .cpu.png	
 test:
 	gotestsum
+#######################################################################
 clean:
 	rm -rf $(dist_dir)
 #######################################################################
