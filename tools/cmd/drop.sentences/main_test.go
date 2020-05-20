@@ -13,14 +13,14 @@ var lmCache *lema.Cache
 func initCache(t *testing.T) {
 	var err error
 	lmCache, err = lema.NewTestCache(strings.NewReader(`
-mama wL
+mama wR
 Vilnius wPL
-ir wL
-kas w
-olia w
-sutartis w
-KAUNAS wPR
-h wA	
+ir wR
+kas wR
+oliaa w
+sutartis wR
+h wA-h-
+Tell. wA-Tell.-	
 `))
 	assert.Nil(t, err)
 }
@@ -28,13 +28,14 @@ h wA
 func TestNoChange(t *testing.T) {
 	initCache(t)
 	assert.Equal(t, "mama ir Vilnius", changeLine("mama ir Vilnius", lmCache))
-	assert.Equal(t, "mama ir Vilnius", changeLine("mama ir Vilnius", lmCache))
-	assert.Equal(t, "mama, ir Vilnius.", changeLine("mama, ir Vilnius.", lmCache))
+	assert.NotEqual(t, "", changeLine("mama ir Vilnius", lmCache))
+	assert.NotEqual(t, "", changeLine("mama, ir Vilnius.", lmCache))
+	assert.NotEqual(t, "", changeLine("mama, ir Vilnius <PILDOMA>.", lmCache))
 }
 
 func TestDrop(t *testing.T) {
 	initCache(t)
-	assert.Equal(t, "", changeLine("olia ir kas", lmCache))
+	assert.Equal(t, "", changeLine("oliaa ir kas", lmCache))
 }
 
 func TestDropNonLtLetter(t *testing.T) {
@@ -54,13 +55,6 @@ func TestDropJustSpecial(t *testing.T) {
 
 func TestDropJustAbbreviation(t *testing.T) {
 	initCache(t)
-	assert.Equal(t, "", changeLine("Tel.", lmCache))
+	assert.Equal(t, "", changeLine("Tell.", lmCache))
 	assert.Equal(t, "", changeLine("h", lmCache))
-}
-
-func TestDropParenthesis(t *testing.T) {
-	initCache(t)
-	assert.Equal(t, "", changeLine("(olia ir ir ir ir ir ir", lmCache))
-	assert.Equal(t, "", changeLine("[olia ir ir ir ir ir ir", lmCache))
-	assert.Equal(t, "", changeLine("<olia ir ir ir ir ir ir", lmCache))
 }

@@ -60,7 +60,7 @@ func leave(l string, lm lemaLt) bool {
 }
 
 func calc(line string, lm lemaLt) (int, int) {
-	strs := strings.Split(line, " ")
+	strs := strings.Fields(line)
 	lt := 0
 	nlt := 0
 	for _, w := range strs {
@@ -79,10 +79,12 @@ func calc(line string, lm lemaLt) (int, int) {
 }
 
 func getType(w string, lm lemaLt) string {
-	wc, end := punct.PureWord(w)
+	wc, _, _ := punct.TrimWord(w, punct.IsPunct)
 	if util.SpecialWordRegexp.MatchString(wc) {
 		return "spec"
 	}
+	wc, _, end := punct.TrimWord(w, punct.IsAllSep)
+	wc = punct.TrimQuote(wc)
 	if lema.IsNumber(wc) {
 		return "num"
 	}
@@ -93,7 +95,7 @@ func getType(w string, lm lemaLt) string {
 	if strings.HasPrefix(end, ".") {
 		dt = "."
 	}
-	if lm.AbbreviationString(wc + dt) != "" {
+	if lm.AbbreviationString(wc+dt) != "" {
 		return "abrv"
 	}
 	return "nlt"

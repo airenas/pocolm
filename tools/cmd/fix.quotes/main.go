@@ -9,16 +9,11 @@ import (
 )
 
 var quoteSymbols map[rune]bool
-var sepSymbols map[rune]bool
 
 func init() {
 	quoteSymbols = make(map[rune]bool)
 	for _, r := range []rune("\"“”„“„”") {
 		quoteSymbols[r] = true
-	}
-	sepSymbols = make(map[rune]bool)
-	for _, r := range []rune(",./\\;:[]{}<>()*&^%$#@!~?-+") {
-		sepSymbols[r] = true
 	}
 }
 
@@ -41,7 +36,7 @@ func changeLine(line string) string {
 	f := strings.Fields(ln)
 	res := make([]string, 0)
 	for _, s := range f {
-		s1, w, s2 := extractWordSep(s)
+		w, s1, s2 := punct.PureWord(s)
 		rns := []rune(w)
 		q := quoted(rns)
 		rns = trimQuotes(rns)
@@ -69,16 +64,6 @@ func trimQuotes(rns []rune) []rune {
 		rns = rns[:len(rns)-1]
 	}
 	return rns
-}
-
-func extractWordSep(s string) (string, string, string) {
-	rns := []rune(s)
-	i1, i2 := 0, len(rns)-1
-	for ; i1 < len(rns) && sepSymbols[rns[i1]]; i1++ {
-	}
-	for ; i2 > i1 && sepSymbols[rns[i2]]; i2-- {
-	}
-	return string(rns[:i1]), string(rns[i1 : i2+1]), string(rns[i2+1:])
 }
 
 func quoteLt(rns []rune) []rune {
