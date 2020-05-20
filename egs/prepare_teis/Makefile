@@ -29,7 +29,7 @@ $(dataDir)/working/corpus.mapped.txt: $(dataDir)/working/corpus.nopar.txt
 $(dataDir)/working/corpus.fixpunct.txt: $(dataDir)/working/corpus.mapped.txt
 	pv $^ | $(toolsDir)/fix.punct -abbr $(abbrFile) > $@		
 $(dataDir)/working/corpus.lc.txt: $(dataDir)/working/corpus.fixpunct.txt
-	pv $^ | $(toolsDir)/to.lc > $@
+	pv $^ | $(toolsDir)/to.lc -abbr $(abbrFile) > $@
 $(dataDir)/working/corpus.ready.txt: $(dataDir)/working/corpus.lc.txt
 	pv $^ | $(toolsDir)/drop.sentences > $@	
 $(dataDir)/final/corpus.txt: $(dataDir)/working/corpus.ready.txt | $(dataDir)/final
