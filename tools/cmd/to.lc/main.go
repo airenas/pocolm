@@ -61,13 +61,15 @@ func changeLine(line string, lm lemaProper, ad *abbr.Abbreviations) string {
 }
 
 func changeWord(w string, lm lemaProper, ad *abbr.Abbreviations) string {
-	wc, end := punct.PureWord(w)
+	wc, _, _ := punct.TrimWord(w, punct.IsPunct)
 	if wc == "" {
 		return w
 	}
 	if util.SpecialWordRegexp.MatchString(wc) {
 		return w
 	}
+	wcq, bg, end := punct.TrimWord(w, punct.IsAllSep)
+	wc = punct.TrimQuote(wcq)
 	if lema.IsNumber(wc) {
 		return w
 	}
@@ -86,13 +88,13 @@ func changeWord(w string, lm lemaProper, ad *abbr.Abbreviations) string {
 	}
 
 	if !lm.Regular(wc) && lm.Proper(wc) {
-		return changeToTitle(w)
+		return bg + changeToTitle(wcq) + end
 	}
-	if lm.Regular(wc) && !lm.Proper(wc) {
+	if lm.Regular(wc) && !lm.Proper(wc) && !isQuoted(wcq) {
 		return strings.ToLower(w)
 	}
 	if lm.Regular(wc) && lm.Proper(wc) && allUpper(wc) {
-		return changeToTitle(w)
+		return bg + changeToTitle(wcq) + end
 	}
 	return w
 }

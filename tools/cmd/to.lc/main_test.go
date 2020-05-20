@@ -44,12 +44,17 @@ func TestChange(t *testing.T) {
 
 func TestQuoted(t *testing.T) {
 	initCache(t)
-	assert.Equal(t, "„olia“ ir „Vilnius“", changeLine("„Olia“ Ir „VILNIUS“", lmCache, ad))
+	assert.Equal(t, "„Olia“ ir „Vilnius“", changeLine("„Olia“ Ir „VILNIUS“", lmCache, ad))
+}
+
+func TestStartWithPunct(t *testing.T) {
+	initCache(t)
+	assert.Equal(t, ".„Olia“ ,.ir (Vilnius", changeLine(".„Olia“ ,.Ir (VILNIUS", lmCache, ad))
 }
 
 func TestQuotedLeaveUpper(t *testing.T) {
 	initCache(t)
-	assert.Equal(t, "„olia“ ir „Kaunas“", changeLine("„Olia“ Ir „KAUNAS“", lmCache, ad))
+	assert.Equal(t, "„Olia“ ir „Kaunas“", changeLine("„Olia“ Ir „KAUNAS“", lmCache, ad))
 	assert.Equal(t, "olia ir Kaunas", changeLine("Olia Ir KAUNAS", lmCache, ad))
 }
 
