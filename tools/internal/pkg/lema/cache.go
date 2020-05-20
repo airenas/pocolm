@@ -16,10 +16,9 @@ import (
 )
 
 type lInfo struct {
-	abbreviation bool
+	abbreviation string //non empty if it is abbreviationa and has abbreviation form
 	proper       bool
 	regular      bool
-	lt           bool
 	number       bool
 }
 
@@ -32,31 +31,22 @@ type Cache struct {
 	vFileName string
 }
 
-//IsAbbreviation returns true of string is abbreviation
-func (l *Cache) IsAbbreviation(w string) bool {
-	if strings.HasSuffix(w, ".") && strings.Title(w) == w && len(w) == 2 {
-		return true
-	}
+//AbbreviationString returns abbreviation form it it has or empty
+func (l *Cache) AbbreviationString(w string) string {
 	r := l.getData(w)
 	return r.abbreviation
 }
 
-//RegularAndProper returns true if word can be proper and also is regular
-func (l *Cache) RegularAndProper(w string) bool {
+//Proper returns true if word can be proper
+func (l *Cache) Proper(w string) bool {
 	r := l.getData(w)
-	return r.proper && r.regular
+	return r.proper
 }
 
-//AlwaysProper returns true if word is only proper
-func (l *Cache) AlwaysProper(w string) bool {
+//Regular returns true if word is regular
+func (l *Cache) Regular(w string) bool {
 	r := l.getData(w)
-	return r.proper && !r.regular
-}
-
-//IsLt returns true if string is lithianian word
-func (l *Cache) IsLt(w string) bool {
-	r := l.getData(w)
-	return r.lt
+	return r.regular
 }
 
 //NewCache creates lema cache
@@ -96,8 +86,7 @@ func (l *Cache) getDataFromServer(w string) *lInfo {
 		}
 		res.proper = isProper(r)
 		res.regular = isRegular(r)
-		res.lt = isLt(r)
-		res.abbreviation = isAbbreviation(r)
+		res.abbreviation = abbreviation(r)
 	}
 
 	return &res
@@ -164,14 +153,11 @@ func toStr(l *lInfo) string {
 	if l.regular {
 		res = res + "R"
 	}
-	if l.abbreviation {
-		res = res + "A"
-	}
-	if l.lt {
-		res = res + "L"
-	}
 	if l.number {
 		res = res + "N"
+	}
+	if l.abbreviation != "" {
+		res = res + "A-" + l.abbreviation + "-"
 	}
 	return res
 }
@@ -203,11 +189,15 @@ func (l *Cache) loadReader(reader io.Reader) error {
 				return errors.Errorf("Wrong line '%s'", line)
 			}
 			li := lInfo{}
-			li.proper = strings.Index(strs[1], "P") > -1
-			li.regular = strings.Index(strs[1], "R") > -1
-			li.abbreviation = strings.Index(strs[1], "A") > -1
-			li.lt = strings.Index(strs[1], "L") > -1
-			li.number = strings.Index(strs[1], "N") > -1
+			s := strs[1]
+			ia := strings.Index(s, "A-")
+			if ia > 0 {
+				li.abbreviation = strings.TrimRight(s[ia+2:], "-")
+				s = s[:ia]
+			}
+			li.proper = strings.Index(s, "P") > -1
+			li.regular = strings.Index(s, "R") > -1
+			li.number = strings.Index(s, "N") > -1
 			l.words[strs[0]] = &li
 		}
 	}
@@ -235,17 +225,15 @@ func isRegular(r *Result) bool {
 	return false
 }
 
-func isAbbreviation(r *Result) bool {
+func abbreviation(r *Result) string {
+	res := ""
 	for _, mi := range r.Mi {
 		if !strings.HasPrefix(mi.MiVdu, "Y") {
-			return false
+			return ""
 		}
+		res = mi.MF
 	}
-	return len(r.Mi) > 0
-}
-
-func isLt(r *Result) bool {
-	return len(r.Mi) > 0 && !isAbbreviation(r)
+	return res
 }
 
 var encoder = charmap.ISO8859_13.NewEncoder()

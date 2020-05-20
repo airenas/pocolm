@@ -1,10 +1,12 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"strings"
 	"unicode"
 
+	"github.com/airenas/pocolm/tools/internal/pkg/abbr"
 	"github.com/airenas/pocolm/tools/internal/pkg/cmd"
 	"github.com/airenas/pocolm/tools/internal/pkg/lema"
 	"github.com/airenas/pocolm/tools/internal/pkg/punct"
@@ -12,39 +14,54 @@ import (
 )
 
 type lemaProper interface {
-	AlwaysProper(string) bool
-	RegularAndProper(string) bool
+	Regular(string) bool
+	Proper(string) bool
+	AbbreviationString(string) string
+}
+
+type params struct {
+	abbrFile string
 }
 
 func main() {
+	prms := params{}
+	flag.StringVar(&prms.abbrFile, "abbr", "", "Abbreviations file")
 	cmd.InitApp()
+	if prms.abbrFile == "" {
+		flag.Usage()
+		log.Fatal("")
+	}
+	ad, err := abbr.NewAbbr(prms.abbrFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	lm, err := lema.NewCache()
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer lm.Close()
-	cmd.ProcessByLine(func(line string) (string, error) { return changeLine(strings.TrimSpace(line), lm), nil })
+	cmd.ProcessByLine(func(line string) (string, error) { return changeLine(strings.TrimSpace(line), lm, ad), nil })
 }
 
-func changeLine(line string, lm lemaProper) string {
+func changeLine(line string, lm lemaProper, ad *abbr.Abbreviations) string {
 	if len(line) == 0 {
 		return line
 	}
-	strs := strings.Split(line, " ")
+	strs := strings.Fields(line)
 	res := strings.Builder{}
+	res.Grow(len(line))
 	for _, w := range strs {
 		if w != "" {
-			if res.Len() > 0 {
-				res.WriteString(" ")
-			}
-			res.WriteString(changeWord(w, lm))
+			res.WriteString(" ")
+			res.WriteString(changeWord(w, lm, ad))
 		}
 	}
-	return util.MultiSpacesRegexp.ReplaceAllString(res.String(), " ")
+	return util.FixSpaces(res.String())
 }
 
-func changeWord(w string, lm lemaProper) string {
-	wc := punct.PureWord(w)
+func changeWord(w string, lm lemaProper, ad *abbr.Abbreviations) string {
+	wc, end := punct.PureWord(w)
 	if wc == "" {
 		return w
 	}
@@ -54,13 +71,30 @@ func changeWord(w string, lm lemaProper) string {
 	if lema.IsNumber(wc) {
 		return w
 	}
-	if isQuoted(w) && lm.RegularAndProper(wc) {
+	dt := ""
+	if strings.HasPrefix(end, ".") {
+		dt = "."
+	}
+	ai, aw := ad.Find(wc + dt)
+	if ai > 0 {
+		return aw + w[ai:]
+	}
+
+	aw = lm.AbbreviationString(wc + dt)
+	if aw != "" {
+		return aw + w[len(aw):]
+	}
+
+	if !lm.Regular(wc) && lm.Proper(wc) {
 		return changeToTitle(w)
 	}
-	if lm.AlwaysProper(wc) {
+	if lm.Regular(wc) && !lm.Proper(wc) {
+		return strings.ToLower(w)
+	}
+	if lm.Regular(wc) && lm.Proper(wc) && allUpper(wc) {
 		return changeToTitle(w)
 	}
-	return strings.ToLower(w)
+	return w
 }
 
 func changeToTitle(w string) string {
@@ -71,6 +105,15 @@ func changeToTitle(w string) string {
 	}
 	r[i] = unicode.ToUpper(r[i])
 	return string(r)
+}
+
+func allUpper(w string) bool {
+	for _, r := range w {
+		if !unicode.IsUpper(r) {
+			return false
+		}
+	}
+	return true
 }
 
 func isQuoted(w string) bool {

@@ -13,8 +13,13 @@ import (
 )
 
 type lemaLt interface {
-	IsLt(string) bool
-	IsAbbreviation(string) bool
+	Regular(string) bool
+	Proper(string) bool
+	AbbreviationString(string) string
+}
+
+type params struct {
+	abbrFile string
 }
 
 func main() {
@@ -74,17 +79,21 @@ func calc(line string, lm lemaLt) (int, int) {
 }
 
 func getType(w string, lm lemaLt) string {
-	wc := punct.PureWord(w)
+	wc, end := punct.PureWord(w)
 	if util.SpecialWordRegexp.MatchString(wc) {
 		return "spec"
 	}
 	if lema.IsNumber(wc) {
 		return "num"
 	}
-	if lm.IsLt(wc) {
+	if lm.Regular(wc) || lm.Proper(wc) {
 		return "lt"
 	}
-	if lm.IsAbbreviation(wc) {
+	dt := ""
+	if strings.HasPrefix(end, ".") {
+		dt = "."
+	}
+	if lm.AbbreviationString(wc + dt) != "" {
 		return "abrv"
 	}
 	return "nlt"

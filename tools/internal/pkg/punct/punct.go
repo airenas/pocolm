@@ -18,11 +18,12 @@ func init() {
 }
 
 //PureWord retun word without punctuation
-func PureWord(w string) string {
+func PureWord(w string) (string, string) {
 	rs := []rune(w)
 	l := len(rs)
 	for ; l > 0 && IsPunct(rs[l-1]); l-- {
 	}
+	end := rs[l:]
 	rs = rs[0:l]
 	if len(rs) > 0 && rs[0] == StartQuote {
 		rs = rs[1:]
@@ -30,7 +31,7 @@ func PureWord(w string) string {
 	if len(rs) > 0 && rs[len(rs)-1] == EndQuote {
 		rs = rs[:len(rs)-1]
 	}
-	return string(rs)
+	return string(rs), string(end)
 }
 
 //IsPunct return true is rune is punctuation
