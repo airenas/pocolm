@@ -18,6 +18,7 @@ func initCache(t *testing.T) {
 	lmCache, err = lema.NewTestCache(strings.NewReader(`
 mama wR
 Vilnius wP
+VILNIUS wP
 Ir wR
 Kas wR
 Olia wR
