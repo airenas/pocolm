@@ -2,4 +2,5 @@
 dataDir=data
 ###############################################################################
 corpusDir=/home/airenas/hdd/projects/lm/corpus/tekstynas_teis
+abbrFile=/home/airenas/hdd/projects/lm/santrumpos_n.txt
 toolsDir=../../tools/bin
