@@ -90,6 +90,30 @@ func TestNumberRomanPart(t *testing.T) {
 	assert.Equal(t, "<NUMERACIJA> skyrius. mama", changeLine("IX skyrius. mama"))
 }
 
+func TestSlash(t *testing.T) {
+	initRegexp(&params{changeSlash: true})
+	assert.Equal(t, "buvo ir gerai", changeLine("buvo ir/ar gerai"))
+	assert.Equal(t, "buvo ir gerai", changeLine("buvo ir/ar/gal gerai"))
+	assert.Equal(t, "buvo iš gerai", changeLine("buvo iš/į/gal gerai"))
+	assert.Equal(t, "buvo iš gerai", changeLine("buvo iš/į gerai"))
+	assert.Equal(t, "buvo, labai gerai", changeLine("buvo,labai/įgerai/gal gerai"))
+}
+
+func TestSlashCase(t *testing.T) {
+	initRegexp(&params{changeSlash: true})
+	assert.Equal(t, "buvo Ir gerai", changeLine("buvo Ir/ar gerai"))
+	assert.Equal(t, "buvo ir gerai", changeLine("buvo ir/Ar/gal gerai"))
+}
+
+func TestSlashIgnore(t *testing.T) {
+	initRegexp(&params{changeSlash: true})
+	assert.Equal(t, "buvo ir/r1 gerai", changeLine("buvo ir/r1 gerai"))
+	assert.Equal(t, "buvo 1ir/r gerai", changeLine("buvo 1ir/r gerai"))
+	assert.Equal(t, "buvo 012/ir gerai", changeLine("buvo 012/ir gerai"))
+	assert.Equal(t, "buvo ir/01 gerai", changeLine("buvo ir/01 gerai"))
+	assert.Equal(t, "buvo 22/01 gerai", changeLine("buvo 22/01 gerai"))
+}
+
 func TestAppendix(t *testing.T) {
 	initRegexp(&params{changeNumeration: true})
 	assert.Equal(t, "<NUMERACIJA> priedas. mama", changeLine("8 priedas. mama"))

@@ -23,6 +23,7 @@ type params struct {
 	changeEmail      bool
 	changeURL        bool
 	changeNumeration bool
+	changeSlash      bool
 }
 
 func main() {
@@ -30,6 +31,7 @@ func main() {
 	flag.BoolVar(&prms.changeEmail, "email", false, "change emails to <EMAIL>")
 	flag.BoolVar(&prms.changeURL, "url", false, "change URLs to <URL>")
 	flag.BoolVar(&prms.changeNumeration, "num", false, "change initial numeration to <NUMERACIJA>")
+	flag.BoolVar(&prms.changeSlash, "slash", false, "change xxx/yyy (remove yyy - treated as explanation to xxx) to xxx")
 	cmd.InitApp()
 	initRegexp(&prms)
 	cmd.ProcessByLine(processLine)
@@ -54,6 +56,10 @@ func initRegexp(p *params) {
 		replaces = append(replaces, &replace{str: " <NUMERACIJA> $3", regxp: newRegexp("^(([0-9]){1,3})( priedas.)")})
 		replaces = append(replaces, &replace{str: " <NUMERACIJA> $5", regxp: newRegexp("^(" + romanNumbers + ")( skyrius.)")})
 		replaces = append(replaces, &replace{str: " <PUNKTAS> ", regxp: newRegexp("^[\\*-] ")})
+	}
+	if p.changeSlash {
+		replaces = append(replaces, &replace{str: " $1 ",
+			regxp: newRegexp("(?i)(\\b[\\p{L}]{2,})((/[\\p{L}]{1,}){1,3})(?:[[:punct:]]|\\s|\\z)")})
 	}
 
 	replaces = append(replaces, &replace{str: " <PILDOMA> ", regxp: newRegexp("[_]{2,}|[\\.]{4,}| [\\.]{3,}")})
