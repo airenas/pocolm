@@ -33,18 +33,27 @@ type Cache struct {
 
 //AbbreviationString returns abbreviation form it it has or empty
 func (l *Cache) AbbreviationString(w string) string {
+	if w == "" {
+		return ""
+	}
 	r := l.getData(w)
 	return r.abbreviation
 }
 
 //Proper returns true if word can be proper
 func (l *Cache) Proper(w string) bool {
+	if w == "" {
+		return false
+	}
 	r := l.getData(w)
 	return r.proper
 }
 
 //Regular returns true if word is regular
 func (l *Cache) Regular(w string) bool {
+	if w == "" {
+		return false
+	}
 	r := l.getData(w)
 	return r.regular
 }
