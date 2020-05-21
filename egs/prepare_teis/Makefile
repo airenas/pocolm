@@ -30,12 +30,10 @@ $(dataDir)/working/corpus.fixpunct.txt: $(dataDir)/working/corpus.mapped.txt
 	pv $^ | $(toolsDir)/fix.punct -abbr $(abbrFile) > $@		
 $(dataDir)/working/corpus.lc.txt: $(dataDir)/working/corpus.fixpunct.txt
 	pv $^ | $(toolsDir)/to.lc -abbr $(abbrFile) > $@
-$(dataDir)/working/corpus.np.txt: $(dataDir)/working/corpus.lc.txt
-	pv $^ | $(toolsDir)/drop.punct -abbr $(abbrFile) > $@
 $(dataDir)/working/corpus.ready.txt: $(dataDir)/working/corpus.lc.txt
 	pv $^ | $(toolsDir)/drop.sentences > $@	
-$(dataDir)/working/corpus.ready.np.txt: $(dataDir)/working/corpus.np.txt
-	pv $^ | $(toolsDir)/drop.sentences > $@		
+$(dataDir)/working/corpus.ready.np.txt: $(dataDir)/working/corpus.ready.txt
+	pv $^ | $(toolsDir)/drop.punct -abbr $(abbrFile) > $@
 $(dataDir)/final/corpus.txt: $(dataDir)/working/corpus.ready.txt | $(dataDir)/final
 	cp $^ $@		
 	cp $^ $(dataDir)/final/dev.txt
