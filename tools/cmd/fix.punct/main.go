@@ -8,6 +8,7 @@ import (
 
 	"github.com/airenas/pocolm/tools/internal/pkg/abbr"
 	"github.com/airenas/pocolm/tools/internal/pkg/cmd"
+	"github.com/airenas/pocolm/tools/internal/pkg/punct"
 	"github.com/airenas/pocolm/tools/internal/pkg/util"
 )
 
@@ -49,7 +50,8 @@ func groupAbbr(line string, ad *abbr.Abbreviations) string {
 	res.Grow(len(line))
 	rns := []rune(line)
 	for i := 0; i < len(rns); i++ {
-		if i == 0 || !util.LetterDigit(rns[i-1]) {
+		if i == 0 || !(util.LetterDigit(rns[i-1]) ||
+			rns[i-1] == punct.StartQuote || rns[i-1] == punct.EndQuote) {
 			ia, _ := ad.Find(string(rns[i:]))
 			if ia != 0 {
 				res.WriteRune(' ')
@@ -80,6 +82,10 @@ func changePunct(line string) string {
 		} else if r == '-' && unicode.IsLetter(pr) && unicode.IsLetter(getByIndex(rns, i+1)) {
 			res.WriteRune(' ')
 		} else if pr == '-' && rLetter && unicode.IsLetter(getByIndex(rns, i-2)) {
+			res.WriteRune(' ')
+		} else if pr == ')' && !unicode.IsSpace(r) {
+			res.WriteRune(' ')
+		} else if !unicode.IsSpace(pr) && r == '(' {
 			res.WriteRune(' ')
 		}
 		res.WriteRune(r)

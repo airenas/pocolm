@@ -12,7 +12,7 @@ var quoteSymbols map[rune]bool
 
 func init() {
 	quoteSymbols = make(map[rune]bool)
-	for _, r := range []rune("\"“”„“„”") {
+	for _, r := range []rune("\"“”„") {
 		quoteSymbols[r] = true
 	}
 }

@@ -6,6 +6,8 @@ $(dataDir)/initial:
 	mkdir -p $@
 $(dataDir)/working:
 	mkdir -p $@	
+$(dataDir)/final:
+	mkdir -p $@		
 ##########################################################################################
 $(dataDir)/initial/corpus.txt: | $(dataDir)/initial
 	find $(corpusDir) -type f -name '*.txt' | grep 'Adm_teks' | xargs -d '\n' -n 1 cat > $@

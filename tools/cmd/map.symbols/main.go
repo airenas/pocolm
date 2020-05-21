@@ -63,6 +63,7 @@ func initRegexp(p *params) {
 	}
 
 	replaces = append(replaces, &replace{str: " <PILDOMA> ", regxp: newRegexp("[_]{2,}|[\\.]{4,}| [\\.]{3,}")})
+	replaces = append(replaces, &replace{str: " <PILDOMA> ", regxp: newRegexp("\\|(_\\|)+")})
 	replaces = append(replaces, &replace{str: " ",
 		regxp: newRegexp("HYPERLINK|FORMTEXT|PAGEREF _Toc\\d+ \\\\h \\d+|MERGEFIELD [„]?[\\p{L}_\\d]+[“]?")})
 

@@ -40,6 +40,7 @@ func TestNoChange(t *testing.T) {
 
 func TestChange(t *testing.T) {
 	initCache(t)
+	assert.Equal(t, "a b", changeLine("a )- b", lmCache, ad))
 	assert.Equal(t, "Olia Ir Kas", changeLine("Olia Ir Kas...", lmCache, ad))
 }
 

@@ -17,6 +17,8 @@ func TestFixes(t *testing.T) {
 	assert.Equal(t, "mama. olia", changePunct("mama.olia"))
 	assert.Equal(t, "mama: olia", changePunct("mama:olia"))
 	assert.Equal(t, "mama - olia", changePunct("mama-olia"))
+	assert.Equal(t, "mama (olia", changePunct("mama(olia"))
+	assert.Equal(t, "1) olia", changePunct("1)olia"))
 }
 
 func TestLeavesWithNumber(t *testing.T) {
@@ -31,6 +33,11 @@ func TestAbbreviations(t *testing.T) {
 	assert.Equal(t, "a t.y. olia", changeLine("a t. y. olia", ad))
 }
 
+func TestQuetedShort(t *testing.T) {
+	ad := newTestAbbreviation(t)
+	assert.Equal(t, "olia „P“", changeLine("olia „P“", ad))
+}
+
 func TestLeavesNumbers(t *testing.T) {
 	assert.Equal(t, "2015.12.12", changePunct("2015.12.12"))
 	assert.Equal(t, "2015-12-12", changePunct("2015-12-12"))
@@ -39,7 +46,8 @@ func TestLeavesNumbers(t *testing.T) {
 
 func newTestAbbreviation(t *testing.T) *abbr.Abbreviations {
 	res, err := abbr.NewAbbrReader(strings.NewReader(`
-t. y.	
+t. y.
+p	
 `))
 	assert.Nil(t, err)
 	return res

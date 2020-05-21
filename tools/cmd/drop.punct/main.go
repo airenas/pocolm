@@ -69,6 +69,9 @@ func clearWord(w string, lm lemaProper, ad *abbr.Abbreviations) string {
 	}
 	wcg, _, end := punct.TrimWord(w, punct.IsAllSep)
 	wc = punct.TrimQuote(wcg)
+	if wc == "" {
+		return ""
+	}
 	if lema.IsNumber(wc) {
 		return trimNumber(w)
 	}

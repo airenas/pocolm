@@ -9,11 +9,15 @@ import (
 //IsNumber return true if string is number with punctuation marks
 func IsNumber(w string) bool {
 	rns := []rune(w)
+	dg := 0
 	for _, r := range rns {
-		if (unicode.IsDigit(r)) || punct.IsPunct(r) {
+		if punct.IsPunct(r) {
+			continue
+		} else if unicode.IsDigit(r) {
+			dg++
 			continue
 		}
 		return false
 	}
-	return true
+	return dg > 0
 }

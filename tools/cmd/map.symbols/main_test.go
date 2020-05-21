@@ -47,6 +47,12 @@ func TestDot(t *testing.T) {
 	assert.Equal(t, "mama <PILDOMA>", changeLine("mama . . . . .. ..."))
 }
 
+func TestVerticalLines(t *testing.T) {
+	initRegexp(&params{})
+	assert.Equal(t, "mama <PILDOMA>", changeLine("mama |_|"))
+	assert.Equal(t, "mama <PILDOMA>", changeLine("mama |_|_|_|_|_|_|_|_|_|_|"))
+}
+
 func TestNumberLetter(t *testing.T) {
 	initRegexp(&params{changeNumeration: true})
 	assert.Equal(t, "<NUMERACIJA> mama", changeLine("a) mama"))
