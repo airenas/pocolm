@@ -24,14 +24,14 @@ func TestFind(t *testing.T) {
 	initTestVocab(t)
 	nl, err := changeLine("10 olia", vocab)
 	assert.Nil(t, err)
-	assert.Equal(t, "10 olia", nl)
+	assert.Equal(t, "", nl)
 }
 
 func TestNotFind(t *testing.T) {
 	initTestVocab(t)
 	nl, err := changeLine("10 olia2", vocab)
 	assert.Nil(t, err)
-	assert.Equal(t, "", nl)
+	assert.Equal(t, "10 olia2", nl)
 }
 
 func TestFail(t *testing.T) {

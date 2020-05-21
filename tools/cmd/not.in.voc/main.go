@@ -24,12 +24,12 @@ func main() {
 	cmd.Config.PrintF = printLine
 	if prms.vocabFile == "" {
 		flag.Usage()
-		log.Fatal("")
+		log.Fatal("No v parameter")
 	}
 
 	voc, err := loadVocab(prms.vocabFile)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(errors.Wrapf(err, "Can't read '%s'", prms.vocabFile))
 	}
 	cmd.ProcessByLine(func(line string) (string, error) { return changeLine(strings.TrimSpace(line), voc) })
 }
@@ -51,9 +51,9 @@ func changeLine(line string, voc map[string]bool) (string, error) {
 		return "", errors.Errorf("Wrong line '%s'", line)
 	}
 	if (len(strs) > 1) && voc[strs[1]] {
-		return line, nil
+		return "", nil
 	}
-	return "", nil
+	return line, nil
 }
 
 func loadVocab(f string) (map[string]bool, error) {
@@ -80,7 +80,7 @@ func loadVocabReader(reader io.Reader) (map[string]bool, error) {
 		line = strings.TrimSpace(line)
 		if line != "" {
 			strs := strings.Fields(line)
-			if len(strs) < 2 {
+			if len(strs) < 1 {
 				return nil, errors.Errorf("Wrong line '%s'", line)
 			}
 			res[strs[0]] = true
