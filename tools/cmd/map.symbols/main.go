@@ -62,7 +62,7 @@ func initRegexp(p *params) {
 			regxp: newRegexp("(?i)(\\b[\\p{L}]{2,})((/[\\p{L}]{1,}){1,3})(?:[[:punct:]]|\\s|\\z)")})
 	}
 
-	replaces = append(replaces, &replace{str: " <PILDOMA> ", regxp: newRegexp("[_]{2,}|[\\.]{4,}| [\\.]{3,}")})
+	replaces = append(replaces, &replace{str: " <PILDOMA> ", regxp: newRegexp(" [_]+ |[_]{2,}|[\\.]{4,}| [\\.]{3,}")})
 	replaces = append(replaces, &replace{str: " <PILDOMA> ", regxp: newRegexp("\\|(_\\|)+")})
 	replaces = append(replaces, &replace{str: " ",
 		regxp: newRegexp("HYPERLINK|FORMTEXT|PAGEREF _Toc\\d+ \\\\h \\d+|MERGEFIELD [„]?[\\p{L}_\\d]+[“]?")})

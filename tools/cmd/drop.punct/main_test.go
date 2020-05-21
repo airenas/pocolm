@@ -59,10 +59,12 @@ func TestNumbers(t *testing.T) {
 	assert.Equal(t, "132 -1,45.24", changeLine("132/ -1,45.24.,", lmCache, ad))
 	assert.Equal(t, "132% 132", changeLine("132%., 132.%", lmCache, ad))
 	assert.Equal(t, "-132 +123,123", changeLine(",/,-132  -=+123,123.", lmCache, ad))
+	assert.Equal(t, "±132", changeLine("±132", lmCache, ad))
 }
 
 func TestChangeVarious(t *testing.T) {
 	initCache(t)
+	assert.Equal(t, "sutartis priedas", changeLine("sutartis | priedas", lmCache, ad))
 	assert.Equal(t, "sutartis Vilnius", changeLine("* - sutartis - Vilnius %)()<>{}[]", lmCache, ad))
 }
 

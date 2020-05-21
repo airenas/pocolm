@@ -34,6 +34,7 @@ func TestUnderscore(t *testing.T) {
 	initRegexp(&params{changeNumeration: true})
 	assert.Equal(t, "mama <PILDOMA> <PILDOMA>", changeLine("mama __ _______"))
 	assert.Equal(t, "mama <PILDOMA>", changeLine("mama________"))
+	assert.Equal(t, "mama <PILDOMA>", changeLine("mama _ "))
 }
 
 func TestDot(t *testing.T) {

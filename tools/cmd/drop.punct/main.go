@@ -94,7 +94,7 @@ func clearWord(w string, lm lemaProper, ad *abbr.Abbreviations) string {
 
 func trimNumber(w string) string {
 	rw, b, e := punct.TrimWord(w, punct.IsAllSep)
-	if strings.HasSuffix(b, "-") || strings.HasSuffix(b, "+") {
+	if strings.HasSuffix(b, "-") || strings.HasSuffix(b, "+") || strings.HasSuffix(b, "±") {
 		rw = string(b[len(b)-1]) + rw
 	}
 	if strings.HasPrefix(e, "%") {
