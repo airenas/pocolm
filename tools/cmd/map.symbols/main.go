@@ -58,8 +58,10 @@ func initRegexp(p *params) {
 		replaces = append(replaces, &replace{str: " <PUNKTAS> ", regxp: newRegexp("^[\\*-] ")})
 	}
 	if p.changeSlash {
-		replaces = append(replaces, &replace{str: " $1 ",
-			regxp: newRegexp("(?i)(\\b[\\p{L}]{2,})((/[\\p{L}]{1,}){1,3})(?:[[:punct:]]|\\s|\\z)")})
+		replaces = append(replaces, &replace{str: " $1$4 ",
+			regxp: newRegexp("(?i)(\\b[\\p{L}]{2,})((/[\\p{L}]{1,}){1,3})(?:([[:punct:]]|\\s|\\z))")})
+		replaces = append(replaces, &replace{str: " $1$3 ",
+			regxp: newRegexp("(?i)(\\b[\\p{L}]{2,})(/-[\\p{L}]+)(?:([[:punct:]]|\\s|\\z))")})
 	}
 
 	replaces = append(replaces, &replace{str: " <PILDOMA> ", regxp: newRegexp(" [_]+ |[_]{2,}|[\\.]{4,}| [\\.]{3,}")})

@@ -103,7 +103,15 @@ func TestSlash(t *testing.T) {
 	assert.Equal(t, "buvo ir gerai", changeLine("buvo ir/ar/gal gerai"))
 	assert.Equal(t, "buvo iš gerai", changeLine("buvo iš/į/gal gerai"))
 	assert.Equal(t, "buvo iš gerai", changeLine("buvo iš/į gerai"))
+	assert.Equal(t, "buvo iš, gerai", changeLine("buvo iš/į, gerai"))
 	assert.Equal(t, "buvo, labai gerai", changeLine("buvo,labai/įgerai/gal gerai"))
+}
+
+func TestSlashEnding(t *testing.T) {
+	initRegexp(&params{changeSlash: true})
+	assert.Equal(t, "buvo ir o", changeLine("buvo ir/-us o"))
+	assert.Equal(t, "buvo ir", changeLine("buvo ir/-us"))
+	assert.Equal(t, "buvo ir,", changeLine("buvo ir/-us,"))
 }
 
 func TestSlashCase(t *testing.T) {
