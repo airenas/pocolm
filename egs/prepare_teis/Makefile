@@ -40,7 +40,8 @@ $(dataDir)/final/corpus.txt: $(dataDir)/working/corpus.ready.txt | $(dataDir)/fi
 $(dataDir)/final/corpus.np.txt: $(dataDir)/working/corpus.ready.np.txt | $(dataDir)/final
 	cp $^ $@		
 
-prepare-data: $(dataDir)/final/corpus.txt $(dataDir)/vocab/corpus.ord.counts $(dataDir)/vocab/corpus.ord.vocab 
+prepare-data: $(dataDir)/final/corpus.txt $(dataDir)/vocab/corpus.ord.counts \
+	$(dataDir)/vocab/corpus.ord.vocab $(dataDir)/vocab/missing.counts
 ##########################################################################################
 $(dataDir)/vocab/corpus.np.counts: $(dataDir)/final/corpus.np.txt | $(dataDir)
 	get_word_counts.py $(dataDir)/final $(dataDir)/vocab
@@ -48,6 +49,8 @@ $(dataDir)/vocab/corpus.ord.counts: $(dataDir)/vocab/corpus.np.counts
 	cat $^ | sort -k1,1nr -k2,2 > $@
 $(dataDir)/vocab/corpus.ord.vocab: $(dataDir)/vocab/corpus.np.counts
 	cat $^ | sort -k2,2 > $@	
+$(dataDir)/vocab/missing.counts: $(dataDir)/vocab/corpus.ord.counts
+	pv $^ | $(toolsDir)/not.in.voc -v $(mainVocab) > $@
 ##########################################################################################
 info:
 	@echo "POCOLM_ROOT=$(POCOLM_ROOT)"
@@ -59,4 +62,5 @@ clean-last:
 clean-lema:
 	rm -f ~/.lema/cache/vocab
 ##########################################################################################
-.PHONY: 
+.PHONY:
+.DELETE_ON_ERROR: 

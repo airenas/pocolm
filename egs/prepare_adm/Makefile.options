@@ -3,4 +3,5 @@ dataDir=data
 ###############################################################################
 corpusDir=/home/airenas/hdd/projects/lm/corpus/tekstynas_admin
 abbrFile=/home/airenas/hdd/projects/lm/santrumpos_n.txt
+mainVocab=/home/airenas/hdd/projects/lm/lmjoin/accepted_words
 toolsDir=../../tools/bin
