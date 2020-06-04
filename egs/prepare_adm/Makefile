@@ -1,6 +1,7 @@
 -include Makefile.options
 POCOLM_ROOT=$(shell cd ../..;pwd -P)
 PATH:=$(PATH):$(POCOLM_ROOT)/scripts
+finalFile=$(dataDir)/adm-corpus-$(shell date +'%y-%m-%d_%H-%M').zip
 ##########################################################################################
 $(dataDir)/initial:
 	mkdir -p $@
@@ -46,6 +47,17 @@ $(dataDir)/vocab/corpus.ord.vocab: $(dataDir)/vocab/corpus.np.counts
 $(dataDir)/vocab/missing.counts: $(dataDir)/vocab/corpus.ord.counts
 	pv $^ | $(toolsDir)/not.in.voc -v $(mainVocab) > $@
 ##########################################################################################
+$(dataDir)/final/.done: $(dataDir)/final/corpus.txt $(dataDir)/vocab/corpus.ord.counts \
+	$(dataDir)/vocab/corpus.ord.vocab $(dataDir)/vocab/missing.counts
+	cp $(dataDir)/vocab/corpus.ord.counts $(dataDir)/final/
+	cp $(dataDir)/vocab/missing.counts $(dataDir)/final/
+	rm -f $(dataDir)/final/dev.txt
+	touch $@
+$(finalFile): $(dataDir)/final/.done
+	zip -r $@  $(dataDir)/final
+
+prepare-final: $(finalFile)
+##########################################################################################
 info:
 	@echo "POCOLM_ROOT=$(POCOLM_ROOT)"
 ##########################################################################################
@@ -56,6 +68,6 @@ clean-last:
 clean-lema:
 	rm -f ~/.lema/cache/vocab
 ##########################################################################################
-.PHONY: 
+.PHONY: prepare-final prepare-data
 
 .DELETE_ON_ERROR:
