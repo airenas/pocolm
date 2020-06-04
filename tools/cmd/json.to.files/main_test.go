@@ -12,10 +12,10 @@ func TestMakeFileName(t *testing.T) {
 }
 
 func TestTitleFix(t *testing.T) {
-	 assert.Equal(t, "a. b", getData(&article{Title: "a " , Body: "b"}))
-	 assert.Equal(t, "a. b", getData(&article{Title: "a. ", Body: "b"}))
-	 assert.Equal(t, "a? b", getData(&article{Title: "a?  ", Body: "b"}))
-	 assert.Equal(t, "a! b", getData(&article{Title: "a!  ", Body: "b"}))
-	 assert.Equal(t, "a,. b", getData(&article{Title: "a,  ", Body: "b"}))
+	 assert.Equal(t, "a.\nb", getData(&article{Title: "a " , Body: "b"}))
+	 assert.Equal(t, "a.\nb", getData(&article{Title: "a. ", Body: "b"}))
+	 assert.Equal(t, "a?\nb", getData(&article{Title: "a?  ", Body: "b"}))
+	 assert.Equal(t, "a!\nb", getData(&article{Title: "a!  ", Body: "b"}))
+	 assert.Equal(t, "a,.\nb", getData(&article{Title: "a,  ", Body: "b"}))
 	 assert.Equal(t, "b", getData(&article{Title: "", Body: "b"}))
 }

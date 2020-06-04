@@ -92,7 +92,7 @@ func getData(a *article) string {
 			title = title + "."
 		}
 	}
-	return strings.TrimSpace(title + " " + strings.TrimSpace(a.Body))
+	return strings.TrimSpace(title + "\n" + strings.TrimSpace(a.Body))
 }
 
 func makeFileName(dir string, num int) string {
