@@ -1,7 +1,8 @@
 ##########################################################################################
 ##########################################################################################
 # script uses ebook-convert from calible
-# do 'sudo apt install calibre' on ubuntu
+# do 'sudo apt install calibre' on ubuntu or better
+# install from original page https://calibre-ebook.com/download_linux
 ##########################################################################################
 # To convert epubs - set file in Makefile.options and run 
 # make all -j4
