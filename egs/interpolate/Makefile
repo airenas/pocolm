@@ -18,6 +18,8 @@ unkSym='<unk>'
 ##########################################################################################
 $(dataDir)/text:
 	mkdir -p $@
+$(dataDir)/text.pocolm:
+	mkdir -p $@
 $(dataDir)/dwn:
 	mkdir -p $@	
 $(dataDir)/vocab:
@@ -32,7 +34,7 @@ $(devDir):
 $(dataDir)/text/$(corpus).txt: $(corpusDir)/$(corpus).txt | $(dataDir)/text
 	ln -s $^ $@
 ##########################################################################################
-$(dataDir)/.text.done: $(corpusDir)/$(corpusAdapt).txt | $(dataDir)/text $(dataDir)/eval
+$(dataDir)/.text.done: $(corpusDir)/$(corpusAdapt).txt $(dataDir)/text/$(corpus).txt| $(dataDir)/text $(dataDir)/eval
 # hold out one in every 20 lines as dev data and as evaluation data.
 # use 5 % for dev and 5% for test
 	pv $(corpusDir)/$(corpusAdapt).txt | \
@@ -44,18 +46,25 @@ $(dataDir)/.text.done: $(corpusDir)/$(corpusAdapt).txt | $(dataDir)/text $(dataD
 	touch $@
 
 ##########################################################################################
-$(dataDir)/.vocab.done: $(corpusDir)/$(corpus).txt $(corpusDir)/$(corpus1).txt $(corpusDir)/$(corpus2).txt | $(dataDir)/vocab
+$(dataDir)/.text.pocolm.done: $(dataDir)/.text.done | $(dataDir)/text.pocolm
+	ln -s $(corpusDir)/$(corpus).txt  $(dataDir)/text.pocolm/$(corpus).txt
+	ln -s $(dataDir)/text/train.txt  $(dataDir)/text.pocolm/train.txt
+	ln -s $(dataDir)/text/dev.txt  $(dataDir)/text.pocolm/dev.txt
+	touch $@
+
+##########################################################################################
+$(dataDir)/vocab/$(vocab): $(corpusDir)/$(corpus).txt $(corpusDir)/$(corpus1).txt $(corpusDir)/$(corpus2).txt | $(dataDir)/vocab
 	pv $(corpusDir)/$(corpus).txt $(corpusDir)/$(corpus1).txt $(corpusDir)/$(corpus2).txt | \
-		python local/prepare-vocab.py --add-unk $(unkSym) --add-eps '<eps>' > $(dataDir)/vocab/$(vocab)
+		python local/prepare-vocab.py --add-unk $(unkSym) --add-eps '<eps>' > $@
 	wc -l $@
-	touch $@	
+
 $(dataDir)/vocab/vocab-all.txt: $(corpusDir)/$(corpus).txt $(corpusDir)/$(corpus1).txt $(corpusDir)/$(corpus2).txt | $(dataDir)/vocab
 	pv $(corpusDir)/$(corpus).txt $(corpusDir)/$(corpus1).txt $(corpusDir)/$(corpus2).txt | \
 		python local/prepare-vocab.py --add-unk $(unkSym) --add-eps '<eps>' --all-words> $@
 	wc -l $@		
 ##########################################################################################
-$(dataDir)/.data.done: $(dataDir)/.vocab.done $(dataDir)/vocab/$(vocab) $(dataDir)/vocab/vocab-all.txt \
-						$(dataDir)/text/$(corpusAdaptName).txt $(evalTxt) $(devTxt)
+$(dataDir)/.data.done: $(dataDir)/vocab/$(vocab) $(dataDir)/vocab/vocab-all.txt \
+					$(dataDir)/.text.done $(dataDir)/.text.pocolm.done
 	touch $(dataDir)/.data.done
 prepare-data: $(dataDir)/.data.done	
 ##########################################################################################
@@ -63,7 +72,7 @@ $(dataDir)/lm/pocolm-$(order)gram/.done: $(dataDir)/.data.done
 	train_lm.py --wordlist=$(dataDir)/vocab/$(vocab) --num-splits=5 --warm-start-ratio=10 $(max_memory) \
               --min-counts=$(min_counts) \
               --keep-int-data=true  $(bypass_metaparam_optim_opt) \
-              $(limit_unk_history_opt) $(dataDir)/text $(order) $(dataDir)/lm/work $(dataDir)/lm/pocolm-$(order)gram
+              $(limit_unk_history_opt) $(dataDir)/text.pocolm $(order) $(dataDir)/lm/work $(dataDir)/lm/pocolm-$(order)gram
 $(finalDir)/$(finalName)-pocolm-$(order)gram.arpa.gz: $(dataDir)/lm/pocolm-$(order)gram/.done | $(finalDir)
 	format_arpa_lm.py $(max_memory) $(dataDir)/lm/pocolm-$(order)gram | gzip -c > $@
 build-pocolm: $(finalDir)/$(finalName)-pocolm-$(order)gram.arpa.gz
@@ -86,8 +95,9 @@ show-ppl:
 ##########################################################################################
 $(lmDir):
 	mkdir -p $@	
-$(lmDir)/%-$(order)gram.arpa.gz: $(dataDir)/.text.done $(dataDir)/.vocab.done | $(lmDir)
-	$(srilmDir)/ngram-count -unk -map-unk $(unkSym) -order $(order) -vocab $(dataDir)/vocab/$(vocab) -kndiscount -text $< -lm $@
+$(lmDir)/%-$(order)gram.arpa.gz: $(dataDir)/.data.done | $(lmDir)
+	$(srilmDir)/ngram-count -unk -map-unk $(unkSym) -order $(order) -vocab $(dataDir)/vocab/$(vocab) -kndiscount \
+		-text $(dataDir)/text/$*.txt -lm $@
 ##########################################################################################
 $(devDir)/%-$(order)gram.ppl: $(lmDir)/%-$(order)gram.arpa.gz | $(devDir)
 	$(srilmDir)/ngram -debug 2 -order $(order) -unk -map-unk $(unkSym) -lm $< -ppl $(devTxt) > $@

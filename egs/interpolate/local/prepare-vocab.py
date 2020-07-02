@@ -1,6 +1,11 @@
 import argparse
 import sys
 
+def print_word(args, word, wc):
+    if args.index:
+        print("%s %d" % (word, wc))
+    else:
+        print("%s" % word)    
 
 def main(argv):
     parser = argparse.ArgumentParser(description="This script makes vocab from text file",
@@ -10,6 +15,7 @@ def main(argv):
     parser.add_argument("--add-unk", default='', type=str, help="Unknown word to add if any")
     parser.add_argument("--add-eps", default='', type=str, help="Epsilon word to add if any")
     parser.add_argument("--all-words", action='store_true', help="Do not skip words like '<xxx>'")
+    parser.add_argument("--index", action='store_true', help="Add word index next to word")
     args = parser.parse_args(args=argv)
 
     print("Starting", file=sys.stderr)
@@ -31,14 +37,14 @@ def main(argv):
     wc = 0
     if args.add_eps != '':
         print("Add eps: %s" % args.add_eps, file=sys.stderr)
-        print("%s %d" % (args.add_eps, wc))
+        print_word(args, args.add_eps, wc)
         wc += 1
     for w in sorted(words):
-        print("%s %d" % (w, wc))
+        print_word(args, w, wc)
         wc += 1
     if args.add_unk != '' and args.add_unk not in words:
         print("Add unk: %s" % args.add_unk, file=sys.stderr)
-        print("%s %d" % (args.add_unk, wc))
+        print_word(args, args.add_unk, wc)
         wc += 1
 
     print("Wrote %d words" % wc, file=sys.stderr)
