@@ -1,0 +1,16 @@
+###############################################################################
+dataDir=/home/airenas/hdd/test/lm
+corpusDir=/home/airenas/hdd/projects/corpus/texts
+
+corpus=BNDR_TARIMO.03
+corpus1=TEIS_TARIM
+corpus2=ADMN_TARIM
+corpusAdaptName=TEIS_TARIM
+corpusAdapt=$(corpus1)
+finalName=$(corpus)+$(corpusAdapt)
+order?=2
+###############################################################################
+putCmd=rsync -P -e 'ssh -p 7022' -P
+putDir=airenas@list.airenas.eu:/home/airenas/lm/
+###############################################################################
+srilmDir=../../srilm/bin/i686-m64
