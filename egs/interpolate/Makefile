@@ -119,6 +119,8 @@ $(finalDir)/$(finalName)-srilm-$(order)gram.arpa.gz: $(lmDir)/$(corpus)-$(order)
   		-mix-lm $(lmDir)/$(corpusAdapt)-$(order)gram.arpa.gz \
 		-write-lm $(finalDir)/$(finalName)-srilm-$(order)gram.arpa.gz
 build-srilm: $(finalDir)/$(finalName)-srilm-$(order)gram.arpa.gz
+
+build: build-srilm calc-ppl-srilm
 ##########################################################################################
 info:
 	@echo "POCOLM_ROOT=$(POCOLM_ROOT)"

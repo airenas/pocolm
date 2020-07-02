@@ -1,5 +1,5 @@
 ###############################################################################
-dataDir=/home/airenas/hdd/test/lm
+dataDir=/home/airenas/hdd/test/lm-teis
 corpusDir=/home/airenas/hdd/projects/corpus/texts
 
 corpus=BNDR_TARIMO.03
