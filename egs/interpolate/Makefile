@@ -7,7 +7,7 @@ min_counts=''
 bypass_metaparam_optim_opt=
 limit_unk_history_opt=
 ##########################################################################################
-evalTxt=$(dataDir)/eval/$(corpusAdaptName).eval.txt
+evalTxt=$(dataDir)/eval/$(corpusAdapt).eval.txt
 devTxt=$(dataDir)/text/dev.txt
 trainTxt=$(dataDir)/text/train.txt
 lmDir=$(dataDir)/lm
@@ -42,7 +42,7 @@ $(dataDir)/.text.done: $(corpusDir)/$(corpusAdapt).txt $(dataDir)/text/$(corpus)
 		'{if(NR%20 == 0) { print >"$(devTxt)"; } \
 		else {if(NR%20 == 1) { print >"$(evalTxt)"; } \
 		else {print;}}}' >$(trainTxt)
-	cp $(corpusDir)/$(corpusAdapt).txt $(dataDir)/text/$(corpusAdaptName).txt
+	cp $(corpusDir)/$(corpusAdapt).txt $(dataDir)/text/$(corpusAdapt).txt
 	touch $@
 
 ##########################################################################################
