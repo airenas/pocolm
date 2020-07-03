@@ -129,11 +129,15 @@ info:
 put-arpa: 
 	$(putCmd) $(finalDir)/*.arpa.gz $(putDir)
 
+put-vocab: 
+	$(putCmd) $(dataDir)/vocab/$(vocab) $(putDir)
+
 clean-final:
 	rm -rf $(finalDir)
 clean:
 	rm -rf $(dataDir)/text
 	rm -rf $(dataDir)/.data.done
+	rm -rf $(dataDir)/.text.done
 	rm -rf $(dataDir)/vocab
 	rm -rf $(dataDir)/eval
 	rm -rf $(dataDir)/lm
