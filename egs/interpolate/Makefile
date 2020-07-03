@@ -13,7 +13,7 @@ trainTxt=$(dataDir)/text/train.txt
 lmDir=$(dataDir)/lm
 devDir=$(dataDir)/dev
 finalDir=$(dataDir)/final
-vocab=vocab.txt
+vocab=vocab-03.txt
 unkSym='<unk>'
 ##########################################################################################
 $(dataDir)/text:
@@ -31,23 +31,25 @@ $(finalDir):
 $(devDir):
 	mkdir -p $@		
 ##########################################################################################
-$(dataDir)/text/$(corpus).txt: $(corpusDir)/$(corpus).txt | $(dataDir)/text
-	ln -s $^ $@
+$(dataDir)/text/$(corpus).txt: $(corpusDir)/$(corpus).txt $(dataDir)/vocab/$(vocab) | $(dataDir)/text
+	pv $(corpusDir)/$(corpus).txt | python local/drop-sentences.py --vocab $(dataDir)/vocab/$(vocab) > $@
 ##########################################################################################
-$(dataDir)/.text.done: $(corpusDir)/$(corpusAdapt).txt $(dataDir)/text/$(corpus).txt| $(dataDir)/text $(dataDir)/eval
+$(dataDir)/.text.done: $(dataDir)/vocab/$(vocab) $(corpusDir)/$(corpusAdapt).txt $(dataDir)/text/$(corpus).txt| $(dataDir)/text $(dataDir)/eval
 # hold out one in every 20 lines as dev data and as evaluation data.
 # use 5 % for dev and 5% for test
 	pv $(corpusDir)/$(corpusAdapt).txt | \
+		python local/drop-sentences.py --vocab $(dataDir)/vocab/$(vocab) > \
+		$(dataDir)/text/$(corpusAdapt).txt
+	pv $(dataDir)/text/$(corpusAdapt).txt | \
 		awk \
 		'{if(NR%20 == 0) { print >"$(devTxt)"; } \
 		else {if(NR%20 == 1) { print >"$(evalTxt)"; } \
 		else {print;}}}' >$(trainTxt)
-	cp $(corpusDir)/$(corpusAdapt).txt $(dataDir)/text/$(corpusAdapt).txt
 	touch $@
 
 ##########################################################################################
 $(dataDir)/.text.pocolm.done: $(dataDir)/.text.done | $(dataDir)/text.pocolm
-	ln -s $(corpusDir)/$(corpus).txt  $(dataDir)/text.pocolm/$(corpus).txt
+	ln -s $(dataDir)/text/$(corpus).txt  $(dataDir)/text.pocolm/$(corpus).txt
 	ln -s $(dataDir)/text/train.txt  $(dataDir)/text.pocolm/train.txt
 	ln -s $(dataDir)/text/dev.txt  $(dataDir)/text.pocolm/dev.txt
 	touch $@
@@ -55,7 +57,7 @@ $(dataDir)/.text.pocolm.done: $(dataDir)/.text.done | $(dataDir)/text.pocolm
 ##########################################################################################
 $(dataDir)/vocab/$(vocab): $(corpusDir)/$(corpus).txt $(corpusDir)/$(corpus1).txt $(corpusDir)/$(corpus2).txt | $(dataDir)/vocab
 	pv $(corpusDir)/$(corpus).txt $(corpusDir)/$(corpus1).txt $(corpusDir)/$(corpus2).txt | \
-		python local/prepare-vocab.py --add-unk $(unkSym) --add-eps '<eps>' > $@
+		python local/prepare-vocab.py > $@
 	wc -l $@
 
 $(dataDir)/vocab/vocab-all.txt: $(corpusDir)/$(corpus).txt $(corpusDir)/$(corpus1).txt $(corpusDir)/$(corpus2).txt | $(dataDir)/vocab
@@ -63,8 +65,7 @@ $(dataDir)/vocab/vocab-all.txt: $(corpusDir)/$(corpus).txt $(corpusDir)/$(corpus
 		python local/prepare-vocab.py --add-unk $(unkSym) --add-eps '<eps>' --all-words> $@
 	wc -l $@		
 ##########################################################################################
-$(dataDir)/.data.done: $(dataDir)/vocab/$(vocab) $(dataDir)/vocab/vocab-all.txt \
-					$(dataDir)/.text.done $(dataDir)/.text.pocolm.done
+$(dataDir)/.data.done: $(dataDir)/vocab/$(vocab) $(dataDir)/.text.done $(dataDir)/.text.pocolm.done
 	touch $(dataDir)/.data.done
 prepare-data: $(dataDir)/.data.done	
 ##########################################################################################
