@@ -13,7 +13,6 @@ trainTxt=$(dataDir)/text/train.txt
 lmDir=$(dataDir)/lm
 devDir=$(dataDir)/dev
 finalDir=$(dataDir)/final
-vocab=vocab-03.txt
 unkSym='<unk>'
 ##########################################################################################
 $(dataDir)/text:
@@ -56,8 +55,12 @@ $(dataDir)/.text.pocolm.done: $(dataDir)/.text.done | $(dataDir)/text.pocolm
 
 ##########################################################################################
 $(dataDir)/vocab/$(vocab): $(corpusDir)/$(corpus).txt $(corpusDir)/$(corpus1).txt $(corpusDir)/$(corpus2).txt | $(dataDir)/vocab
-	pv $(corpusDir)/$(corpus).txt $(corpusDir)/$(corpus1).txt $(corpusDir)/$(corpus2).txt | \
+ifeq ($(MAKE_VOCAB),1)
+	pv $(corpusDir)/$(corpus).txt $(corpusDir)/$(corpus1).txt $(corpusDir)/$(corpus2).txt $(corpusDir)/$(corpus3).txt | \
 		python local/prepare-vocab.py > $@
+else
+	cp $(corpusDir)/$(vocab) $@
+endif
 	wc -l $@
 
 $(dataDir)/vocab/vocab-all.txt: $(corpusDir)/$(corpus).txt $(corpusDir)/$(corpus1).txt $(corpusDir)/$(corpus2).txt | $(dataDir)/vocab
@@ -124,8 +127,10 @@ build-srilm: $(finalDir)/$(finalName)-srilm-$(order)gram.arpa.gz
 build: build-srilm calc-ppl-srilm
 ##########################################################################################
 info:
-	@echo "POCOLM_ROOT=$(POCOLM_ROOT)"
-	@echo "ngram order=$(order)"
+	@echo "POCOLM_ROOT  : $(POCOLM_ROOT)"
+	@echo "ngram order  : $(order)"
+	@echo "dataDir		: $(dataDir)"
+	@echo "final file 	: $(finalDir)/$(finalName)-srilm-$(order)gram.arpa.gz"
 ##########################################################################################
 put-arpa: 
 	$(putCmd) $(finalDir)/*.arpa.gz $(putDir)

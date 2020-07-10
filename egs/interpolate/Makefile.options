@@ -1,13 +1,17 @@
 ###############################################################################
-dataDir=/home/airenas/hdd/test/lm-admn
+#dataDir=/home/airenas/hdd/test/lm-teis
 corpusDir=/home/airenas/hdd/projects/corpus/texts
 
 corpus=BNDR_TARIMO.03
 corpus1=TEIS_TARIM
 corpus2=ADMN_TARIM
-corpusAdapt=$(corpus2)
+corpus3=MEDI_TARIM
+corpusAdapt=$(corpus3)
 finalName=$(corpus)+$(corpusAdapt)
 order?=2
+dataDir=/home/airenas/hdd/test/$(corpusAdapt)
+vocab=vocab-04.txt
+MAKE_VOCAB=1
 ###############################################################################
 putCmd=rsync -P -e 'ssh -p 7022' -P
 putDir=airenas@list.airenas.eu:/home/airenas/lm/
