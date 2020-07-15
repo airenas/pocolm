@@ -90,8 +90,11 @@ $(finalDir)/%.ppl: $(finalDir)/%.arpa.gz | $(finalDir)
 $(finalDir)/%-srilm-$(order)gram.ppl: $(lmDir)/%-$(order)gram.arpa.gz | $(finalDir) 
 	$(srilmDir)/ngram -unk -map-unk $(unkSym) -order $(order) -lm $< -ppl $(evalTxt) > $@
 
+$(finalDir)/%-srilm-$(order)gram$(ext).ppl: $(lmDir)/%-$(order)gram$(ext).arpa.gz | $(finalDir) 
+	$(srilmDir)/ngram -unk -map-unk $(unkSym) -order $(order) -lm $< -ppl $(evalTxt) > $@
+
 calc-ppl-pocolm: $(finalDir)/$(finalName)-pocolm-$(order)gram-pocolm.ppl $(finalDir)/$(finalName)-pocolm-$(order)gram.ppl 
-calc-ppl-srilm: $(finalDir)/$(finalName)-srilm-$(order)gram.ppl $(finalDir)/$(corpus)-srilm-$(order)gram.ppl \
+calc-ppl-srilm: $(finalDir)/$(finalName)-srilm-$(order)gram$(ext).ppl $(finalDir)/$(corpus)-srilm-$(order)gram.ppl \
 				$(finalDir)/$(corpusAdapt)-srilm-$(order)gram.ppl $(finalDir)/train-srilm-$(order)gram.ppl
 show-ppl: 
 	@echo -n "\n\n#####Results\n"
@@ -116,13 +119,13 @@ $(devDir)/$(corpus).int.value: $(devDir)/int.values.all
 compute-interpolate-values: $(devDir)/$(corpus).int.value
 	echo "Corpus interpolate value: $$(cat $(devDir)/$(corpus).int.value)" 	
 ##########################################################################################
-$(finalDir)/$(finalName)-srilm-$(order)gram.arpa.gz: $(lmDir)/$(corpus)-$(order)gram.arpa.gz \
+$(finalDir)/$(finalName)-srilm-$(order)gram$(ext).arpa.gz: $(lmDir)/$(corpus)-$(order)gram.arpa.gz \
 		$(lmDir)/$(corpusAdapt)-$(order)gram.arpa.gz $(devDir)/$(corpus).int.value | $(finalDir)
 	$(srilmDir)/ngram -order $(order) -unk -map-unk $(unkSym) \
   		-lm $(lmDir)/$(corpus)-$(order)gram.arpa.gz -lambda $$(cat $(devDir)/$(corpus).int.value) \
   		-mix-lm $(lmDir)/$(corpusAdapt)-$(order)gram.arpa.gz \
-		-write-lm $(finalDir)/$(finalName)-srilm-$(order)gram.arpa.gz
-build-srilm: $(finalDir)/$(finalName)-srilm-$(order)gram.arpa.gz
+		-write-lm $@
+build-srilm: $(finalDir)/$(finalName)-srilm-$(order)gram$(ext).arpa.gz
 
 build: build-srilm calc-ppl-srilm
 ##########################################################################################
@@ -131,6 +134,7 @@ info:
 	@echo "ngram order  : $(order)"
 	@echo "dataDir		: $(dataDir)"
 	@echo "final file 	: $(finalDir)/$(finalName)-srilm-$(order)gram.arpa.gz"
+	@echo "build vocab 	: $(MAKE_VOCAB)"
 ##########################################################################################
 put-arpa: 
 	$(putCmd) $(finalDir)/*.arpa.gz $(putDir)
