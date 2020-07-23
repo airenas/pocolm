@@ -59,7 +59,7 @@ ifeq ($(MAKE_VOCAB),1)
 	pv $(corpusDir)/$(corpus).txt $(corpusDir)/$(corpus1).txt $(corpusDir)/$(corpus2).txt $(corpusDir)/$(corpus3).txt | \
 		python local/prepare-vocab.py > $@
 else
-	cp $(corpusDir)/$(vocab) $@
+	cat $(corpusDir)/$(vocab) | grep -v -e '<eps>' -e '#0' > $@
 endif
 	wc -l $@
 
